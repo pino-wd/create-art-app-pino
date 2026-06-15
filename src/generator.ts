@@ -71,8 +71,10 @@ function mergeFeatureDeps(targetDir: string, options: ProjectOptions): void {
     pkg.devDependencies = { ...pkg.devDependencies, ...devDeps }
   }
 
-  // Add CLI version marker
-  pkg['create-art-app-pino'] = { version: '1.0.0' }
+  // Add CLI version marker (read from CLI own package.json)
+  const cliPkgPath = path.resolve(__dirname, '..'  , 'package.json')
+  const cliVersion = fs.existsSync(cliPkgPath) ? JSON.parse(fs.readFileSync(cliPkgPath, 'utf-8')).version : '0.0.0'
+  pkg['create-art-app-pino'] = { version: cliVersion }
 
   fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n')
 }
