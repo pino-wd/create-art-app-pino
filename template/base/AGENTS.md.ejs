@@ -1,0 +1,65 @@
+<% if (options.scaffold.agentsMd) { %><% if (options.scaffold.docGovernance) { %># AGENTS.md
+
+## 项目硬约束
+
+- 包管理器：`<%= options.packageManager %>`，不得混用。
+- UI 范式：Vue 3 + TypeScript + Vite + Element Plus + Tailwind CSS v4。
+- 修改前先做最小必要只读分析，不扩大改动范围，不顺手重构无关模块。
+<% if (options.scaffold.reference) { %>- `.reference/` 目录只读，不得修改。需要复用时按当前项目结构迁入必要代码。
+<% } %>
+## Skill 路由规则
+
+<!-- TODO: 根据项目实际情况配置 skill 路由 -->
+
+## 文档治理
+
+本项目执行文档治理规范，详见 [`docs/README.md`](docs/README.md) 和 [`docs/adr/0001-doc-governance.md`](docs/adr/0001-doc-governance.md)。
+
+核心规则：
+- 所有 `docs/` 下文档必须包含合规 frontmatter。
+- 文件名一律 kebab-case。
+- 禁止私人绝对路径。
+- 变更文档时同步更新 CHANGELOG.md。
+
+## 提交前必跑命令
+
+详见 [`docs/reference/cli.md`](docs/reference/cli.md)。
+
+```bash
+<%= options.packageManager === 'npm' ? 'npm run' : options.packageManager %> lint
+<%= options.packageManager === 'npm' ? 'npm run' : options.packageManager %> type-check
+<%= options.packageManager === 'npm' ? 'npm run' : options.packageManager %> docs:lint
+```
+<% } else { %># AGENTS.md
+
+## 项目级开发约束
+
+本仓库是基于 Vue 3 + TypeScript + Vite + Element Plus + Art Design Pro 风格基座的前端项目。后续开发必须优先遵循现有技术栈和 `<%= options.packageManager %>` 包管理器，不得混用包管理器或引入新的 UI 范式。
+修改前先做最小必要只读分析，确认现有实现、路由、组件、服务和文档口径。
+除非明确要求，不要扩大改动范围，不要顺手重构无关模块，不要修改 `.reference` 目录内容。
+<% if (options.scaffold.reference) { %>
+## `.reference` 参考项目
+
+项目根目录存在 `.reference`，当前包含：
+
+- `.reference/art-design-pro`
+
+这是本项目的前端视觉、布局和组件实现参考源。开发时应优先阅读并参考其中实现，再结合当前项目已有代码做最小迁移或适配。不要直接从业务代码中 `import` `.reference` 路径；需要复用时，应按当前项目目录结构迁入必要代码，并删除无关示例能力。
+
+## 使用 `.reference` 的原则
+
+1. 先查 `.reference/art-design-pro` 是否已有相近模式，再决定是否实现。
+2. 只迁移当前需求直接需要的最小代码，不搬运整套示例页面。
+3. 迁入代码必须适配当前项目命名、路径别名、类型定义、权限和接口契约。
+4. 图表、表格、搜索栏、页面容器优先贴合 Art Design Pro 的密度和交互方式。
+5. 示例中的暗色模式、设置面板、锁屏、聊天、水印、演示数据等能力，未被明确要求时不要主动引入。
+6. 如需新增依赖，优先核对 `.reference/art-design-pro/package.json` 的版本，并说明用途和影响。
+<% } %>
+## 当前业务边界
+
+<!-- TODO: 根据项目实际情况填写 -->
+
+## 文档同步要求
+
+当页面入口、路由、模块定位或实现口径变化时，必须同步检查 `docs/` 中相关规划、设计和偏差分析文档，避免文档继续描述已经删除或尚未实现的能力。
+<% } %><% } %>

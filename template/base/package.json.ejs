@@ -1,0 +1,58 @@
+{
+  "name": "<%= options.projectName %>",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "pnpm build-only",
+    "build-only": "vite build",
+    "preview": "vite preview",
+    "check:commit": "run-s check:commit:fix type-check",
+    "check:commit:fix": "lint-staged",
+<% if (options.scaffold.docGovernance) { %>    "docs:lint": "node scripts/docs/lint-frontmatter.mjs && node scripts/docs/lint-naming.mjs && bash scripts/docs/lint-no-private-path.sh && bash scripts/docs/lint-links.sh",
+    "check:push": "run-s lint type-check docs:lint",
+<% } else { %>    "check:push": "run-s lint type-check",
+<% } %>
+    "type-check": "run-p type-check:app type-check:node",
+    "type-check:app": "vue-tsc --noEmit -p tsconfig.app.json",
+    "type-check:node": "tsc --noEmit -p tsconfig.node.json",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.3.1",
+    "@iconify/vue": "^4.3.0",
+    "@vueuse/core": "^12.8.2",
+    "axios": "^1.7.9",
+    "element-plus": "^2.9.7",
+    "mitt": "^3.0.1",
+    "nprogress": "^0.2.0",
+    "ohash": "^2.0.11",
+    "pinia": "^3.0.2",
+    "pinia-plugin-persistedstate": "^4.2.0",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^4.13.0",
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "@tailwindcss/vite": "^4.1.8",
+    "@vitejs/plugin-vue": "^5.2.3",
+    "eslint": "^9.27.0",
+    "eslint-plugin-format": "^1.0.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.0",
+    "npm-run-all2": "^8.0.4",
+    "sass": "^1.89.1",
+    "tailwindcss": "^4.1.8",
+    "typescript": "^5.7.2",
+    "unplugin-auto-import": "^19.3.0",
+    "unplugin-element-plus": "^0.8.0",
+    "unplugin-vue-components": "^28.4.1",
+    "vite": "^6.3.5",
+    "vue-tsc": "^2.2.10"
+  }
+}

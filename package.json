@@ -1,0 +1,42 @@
+{
+  "name": "create-art-app-pino",
+  "version": "1.0.0",
+  "description": "CLI scaffold tool for creating Art Design Pro based projects",
+  "type": "module",
+  "bin": {
+    "create-art-app-pino": "dist/index.cjs"
+  },
+  "files": [
+    "dist",
+    "template"
+  ],
+  "scripts": {
+    "dev": "tsup --watch",
+    "build": "tsup",
+    "start": "node dist/index.cjs",
+    "prepublishOnly": "pnpm build"
+  },
+  "keywords": [
+    "cli",
+    "scaffold",
+    "vue",
+    "art-design-pro",
+    "create-app"
+  ],
+  "author": "pino",
+  "license": "MIT",
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "kolorist": "^1.8.0",
+    "minimist": "^1.2.8",
+    "prompts": "^2.4.2"
+  },
+  "devDependencies": {
+    "@types/ejs": "^3.1.5",
+    "@types/minimist": "^1.2.5",
+    "@types/node": "^22.10.0",
+    "@types/prompts": "^2.4.9",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2"
+  }
+}
