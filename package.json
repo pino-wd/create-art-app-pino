@@ -38,5 +38,8 @@
     "@types/prompts": "^2.4.9",
     "tsup": "^8.3.5",
     "typescript": "^5.7.2"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
   }
 }

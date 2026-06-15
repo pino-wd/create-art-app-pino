@@ -124,6 +124,47 @@ node ../dist/index.cjs my-test --default --no-reference
 
 ## 发布
 
+### 前置：npm registry 配置
+
+国内开发者通常用 CNPM 镜像加速安装，但 **登录和发布必须走官方 registry**。
+
+```bash
+# 查看当前 registry（如果是 npmmirror 则需要额外配置）
+npm config get registry
+```
+
+**方式 A：命令行指定（推荐，不改全局配置）**
+
+```bash
+npm login --registry=https://registry.npmjs.org
+```
+
+**方式 B：在 package.json 中锁定发布地址（一劳永逸）**
+
+项目已配置 `publishConfig`，`pnpm publish` 会自动走官方 registry：
+
+```json
+{
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  }
+}
+```
+
+> 日常 `pnpm install` 仍走 CNPM 镜像，两不耽误。
+
+### 首次发布
+
+```bash
+# 1. 登录 npm（首次需要，会打开浏览器验证）
+npm login --registry=https://registry.npmjs.org
+
+# 2. 确认登录成功
+npm whoami --registry=https://registry.npmjs.org
+```
+
+### 日常发版
+
 ```bash
 # 1. 更新版本号（自动同步到生成项目的版本标记）
 npm version patch  # 或 minor / major
@@ -138,7 +179,6 @@ git push --follow-tags
 ```
 
 发布后用户即可通过 `pnpm create art-app-pino` 使用最新版本。
-
 ## 项目结构
 
 ```
