@@ -12,18 +12,18 @@ lastReviewed: 2026-01-01
 
 ## 目录
 
-| 类型 | 路径 | 说明 |
-| --- | --- | --- |
-| 快速开始 | `getting-started/` | 新人接入、本地启动 |
-| 操作指南 | `guides/` | 新增页面、路由、权限、组件等操作方法 |
-| 参考文档 | `reference/` | 配置项、目录结构、CLI、权限、路由等 |
-| 架构文档 | `architecture/` | 模块边界、运行流程、核心设计 |
-| 需求记录 | `changes/requirements/` | 重要需求详情 |
-| 排障手册 | `maintenance/troubleshooting.md` | 高频问题与解决方案 |
-| 异常记录 | `maintenance/incidents/` | 线上故障复盘 |
-| 决策记录 | `adr/` | 技术选型与架构决策 |
-| 文档模板 | `templates/` | 各类文档的标准模板 |
-| 归档 | `archive/` | 已废弃或已被取代的历史文档 |
+| 类型     | 路径                             | 说明                                 |
+| -------- | -------------------------------- | ------------------------------------ |
+| 快速开始 | `getting-started/`               | 新人接入、本地启动                   |
+| 操作指南 | `guides/`                        | 新增页面、路由、权限、组件等操作方法 |
+| 参考文档 | `reference/`                     | 配置项、目录结构、CLI、权限、路由等  |
+| 架构文档 | `architecture/`                  | 模块边界、运行流程、核心设计         |
+| 需求记录 | `changes/requirements/`          | 重要需求详情                         |
+| 排障手册 | `maintenance/troubleshooting.md` | 高频问题与解决方案                   |
+| 异常记录 | `maintenance/incidents/`         | 线上故障复盘                         |
+| 决策记录 | `adr/`                           | 技术选型与架构决策                   |
+| 文档模板 | `templates/`                     | 各类文档的标准模板                   |
+| 归档     | `archive/`                       | 已废弃或已被取代的历史文档           |
 
 ## 文档治理
 

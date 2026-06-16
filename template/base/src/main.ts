@@ -1,19 +1,19 @@
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
-import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
-import ElementPlus from 'element-plus'
-import 'element-plus/dist/index.css'
 import App from './App.vue'
+import { createApp } from 'vue'
+import { initStore } from './store'
 import router from './router'
-import '@/assets/styles/index.scss'
+import language from './locales'
+import '@styles/core/tailwind.css'
+import '@styles/index.scss'
+import '@utils/sys/console'
+import { setupGlobDirectives } from './directives'
+import { setupErrorHandle } from './utils/sys/error-handle'
 
 const app = createApp(App)
+initStore(app)
+setupGlobDirectives(app)
+setupErrorHandle(app)
 
-const pinia = createPinia()
-pinia.use(piniaPluginPersistedstate)
-
-app.use(pinia)
+app.use(language)
 app.use(router)
-app.use(ElementPlus)
-
 app.mount('#app')

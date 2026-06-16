@@ -13,12 +13,13 @@
 
 import fs from 'node:fs'
 import path from 'node:path'
+import process from 'node:process'
 
 const DOCS_DIR = path.resolve('docs')
 const EXCLUDE_DIRS = new Set(['templates', 'archive'])
 const EXCEPTIONS = new Set(['README.md', 'CHANGELOG.md', '.gitkeep'])
 
-const KEBAB_RE = /^[a-z0-9]+(-[a-z0-9]+)*\.md$/
+const KEBAB_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*\.md$/
 const DATE_PREFIX_RE = /^\d{4}-\d{2}-\d{2}-.+\.md$/
 const ADR_PREFIX_RE = /^\d{4}-.+\.md$/
 
@@ -26,13 +27,16 @@ const DATE_REQUIRED = ['changes/requirements', 'maintenance/incidents']
 
 function collectMarkdownFiles(dir) {
   const results = []
-  if (!fs.existsSync(dir)) return results
+  if (!fs.existsSync(dir))
+    return results
 
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     const full = path.join(dir, entry.name)
     if (entry.isDirectory()) {
-      if (!EXCLUDE_DIRS.has(entry.name)) results.push(...collectMarkdownFiles(full))
-    } else if (entry.name.endsWith('.md')) {
+      if (!EXCLUDE_DIRS.has(entry.name))
+        results.push(...collectMarkdownFiles(full))
+    }
+    else if (entry.name.endsWith('.md')) {
       results.push({ fullPath: full, name: entry.name })
     }
   }
@@ -48,7 +52,8 @@ if (files.length === 0) {
 }
 
 for (const { fullPath, name } of files) {
-  if (EXCEPTIONS.has(name)) continue
+  if (EXCEPTIONS.has(name))
+    continue
 
   const relToDocs = path.relative(DOCS_DIR, fullPath)
   const relToCwd = path.relative(process.cwd(), fullPath)
@@ -57,18 +62,20 @@ for (const { fullPath, name } of files) {
   // Normalize path separators for matching
   const normalized = relToDocs.split(path.sep).join('/')
 
-  const needsDate = DATE_REQUIRED.some(p => normalized.startsWith(p + '/'))
+  const needsDate = DATE_REQUIRED.some(p => normalized.startsWith(`${p}/`))
   const isAdr = normalized.startsWith('adr/')
 
   if (needsDate) {
     if (!DATE_PREFIX_RE.test(name)) {
       errors.push('requires YYYY-MM-DD- prefix (e.g., 2026-01-15-feature-name.md)')
     }
-  } else if (isAdr) {
+  }
+  else if (isAdr) {
     if (!ADR_PREFIX_RE.test(name)) {
       errors.push('requires NNNN- four-digit prefix (e.g., 0001-decision-name.md)')
     }
-  } else {
+  }
+  else {
     if (!KEBAB_RE.test(name)) {
       errors.push('must be kebab-case (a-z0-9 with hyphens)')
     }
@@ -84,6 +91,7 @@ for (const { fullPath, name } of files) {
 if (hasError) {
   console.error('\n⛔ Naming convention check failed.\n')
   process.exit(1)
-} else {
+}
+else {
   console.log('✅ Naming convention check passed.')
 }

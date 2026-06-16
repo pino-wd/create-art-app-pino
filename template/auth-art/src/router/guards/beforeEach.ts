@@ -1,7 +1,7 @@
 import type { Router } from 'vue-router'
 import NProgress from 'nprogress'
-import { useUserStore } from '@/store/modules/user'
 import { fetchGetUserInfo } from '@/api/auth'
+import { useUserStore } from '@/store/modules/user'
 
 // 是否已获取过用户信息
 let hasLoadedUserInfo = false
@@ -26,7 +26,8 @@ export function setupBeforeEachGuard(router: Router): void {
     if (to.path === '/login') {
       if (userStore.isLogin) {
         next('/')
-      } else {
+      }
+      else {
         next()
       }
       return
@@ -47,7 +48,8 @@ export function setupBeforeEachGuard(router: Router): void {
         const userInfo = await fetchGetUserInfo()
         userStore.setUserInfo(userInfo as any)
         hasLoadedUserInfo = true
-      } catch (error) {
+      }
+      catch (error) {
         console.error('[Router] 获取用户信息失败:', error)
         userStore.logOut()
         next({ path: '/login' })

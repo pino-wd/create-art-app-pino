@@ -10,24 +10,24 @@ lastReviewed: 2026-01-01
 
 ## 开发
 
-| 命令 | 说明 |
-| --- | --- |
-| `pnpm dev` | 启动 Vite 开发服务器 |
-| `pnpm build` | 生产构建 |
-| `pnpm preview` | 预览构建产物 |
+| 命令           | 说明                 |
+| -------------- | -------------------- |
+| `pnpm dev`     | 启动 Vite 开发服务器 |
+| `pnpm build`   | 生产构建             |
+| `pnpm preview` | 预览构建产物         |
 
 ## 代码质量
 
-| 命令 | 说明 |
-| --- | --- |
-| `pnpm lint` | ESLint 检查 |
-| `pnpm lint:fix` | ESLint 自动修复 |
+| 命令              | 说明                |
+| ----------------- | ------------------- |
+| `pnpm lint`       | ESLint 检查         |
+| `pnpm lint:fix`   | ESLint 自动修复     |
 | `pnpm type-check` | TypeScript 类型检查 |
 
 ## 文档治理
 
-| 命令 | 说明 |
-| --- | --- |
+| 命令             | 说明                  |
+| ---------------- | --------------------- |
 | `pnpm docs:lint` | 运行全部 4 道文档护栏 |
 
 `docs:lint` 依次执行：
@@ -39,8 +39,8 @@ lastReviewed: 2026-01-01
 
 ## Git Hooks
 
-| Hook | 执行内容 |
-| --- | --- |
+| Hook         | 执行内容                                                     |
+| ------------ | ------------------------------------------------------------ |
 | `pre-commit` | `lint-staged`（ESLint + frontmatter + naming）+ 私人路径检测 |
-| `commit-msg` | `commitlint`（Conventional Commits） |
-| `pre-push` | `lint` + `type-check` + `docs:lint` |
+| `commit-msg` | `commitlint`（Conventional Commits）                         |
+| `pre-push`   | `lint` + `type-check` + `docs:lint`                          |

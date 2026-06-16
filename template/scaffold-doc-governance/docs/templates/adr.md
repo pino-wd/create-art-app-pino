@@ -14,8 +14,13 @@ relatedRequirements: []
 Proposed / Accepted / Deprecated / Superseded
 
 ## 背景
+
 ## 决策
+
 ## 备选方案
+
 ## 影响
+
 ## 风险
+
 ## 后续行动

@@ -23,13 +23,15 @@ export const useAuthStore = defineStore('auth', () => {
   let isAuthRedirecting = false
 
   function hasUsableToken(): boolean {
-    if (!token.value) return false
+    if (!token.value)
+      return false
     return expiresAt.value === null || Date.now() < expiresAt.value
   }
 
   function isStoredAuthModeCompatible(storedAuthMode: string | null): boolean {
     const currentAuthMode = getAuthMode()
-    if (storedAuthMode === null) return currentAuthMode === 'cas'
+    if (storedAuthMode === null)
+      return currentAuthMode === 'cas'
     return storedAuthMode === currentAuthMode
   }
 
@@ -54,7 +56,8 @@ export const useAuthStore = defineStore('auth', () => {
 
     try {
       userInfo.value = JSON.parse(storedUserInfo) as StoredUserInfo
-    } catch {
+    }
+    catch {
       userInfo.value = null
     }
   }
@@ -68,7 +71,8 @@ export const useAuthStore = defineStore('auth', () => {
     }
     if (expiresAt.value !== null) {
       localStorage.setItem(authStorageKeys.expiresAt, String(expiresAt.value))
-    } else {
+    }
+    else {
       localStorage.removeItem(authStorageKeys.expiresAt)
     }
     localStorage.setItem(authStorageKeys.mode, getAuthMode())
@@ -127,7 +131,8 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   async function autoLogin(): Promise<boolean> {
-    if (autoLoginPromise) return autoLoginPromise
+    if (autoLoginPromise)
+      return autoLoginPromise
 
     autoLoginPromise = (async () => {
       isLoggingIn.value = true
@@ -159,14 +164,17 @@ export const useAuthStore = defineStore('auth', () => {
         }
 
         restoreFromStorage()
-        if (hasUsableToken()) return true
+        if (hasUsableToken())
+          return true
 
         return await loginByCasUser(casUser)
-      } catch (error) {
+      }
+      catch (error) {
         clear()
         errorMessage.value = error instanceof Error ? error.message : '自动登录失败'
         return false
-      } finally {
+      }
+      finally {
         isLoggingIn.value = false
         autoLoginPromise = null
       }
@@ -184,8 +192,10 @@ export const useAuthStore = defineStore('auth', () => {
 
   function logout(redirectPath?: string): void {
     clear()
-    if (isDevTokenAuthMode()) return
-    if (isAuthRedirecting) return
+    if (isDevTokenAuthMode())
+      return
+    if (isAuthRedirecting)
+      return
     isAuthRedirecting = true
     loginOutRedirect(redirectPath)
   }
@@ -197,7 +207,8 @@ export const useAuthStore = defineStore('auth', () => {
       errorMessage.value = '环境变量 VITE_DEV_TOKEN 已失效，请更新后重启开发服务'
       return
     }
-    if (isAuthRedirecting) return
+    if (isAuthRedirecting)
+      return
     isAuthRedirecting = true
     loginOutRedirect(redirectPath)
   }

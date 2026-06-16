@@ -1,34 +1,64 @@
+import type { AxiosRequestConfig } from 'axios'
 import axios from 'axios'
-import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
+import { ElMessage } from 'element-plus'
+import { useUserStore } from '@/store/modules/user'
+import { setupMock } from './mock'
 
-const service: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
+const http = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL || '',
   timeout: 30000,
 })
 
-// Request interceptor
-service.interceptors.request.use(
+// 启用 Mock 拦截器（仅 VITE_MOCK_ENABLED=true 时生效）
+setupMock(http)
+
+// 请求拦截器：注入 token
+http.interceptors.request.use(
   (config) => {
-    // Token injection will be handled by auth layer overlay
+    const userStore = useUserStore()
+    if (userStore.accessToken) {
+      config.headers.Authorization = `Bearer ${userStore.accessToken}`
+    }
     return config
   },
-  (error) => Promise.reject(error),
+  error => Promise.reject(error),
 )
 
-// Response interceptor
-service.interceptors.response.use(
-  (response: AxiosResponse) => {
+// 响应拦截器：处理 401 和业务错误
+http.interceptors.response.use(
+  (response) => {
     return response.data
   },
   (error) => {
+    if (error.response?.status === 401) {
+      const userStore = useUserStore()
+      userStore.logOut()
+      return Promise.reject(error)
+    }
     const message = error.response?.data?.message || error.message || '请求失败'
-    console.error('[HTTP Error]', message)
+    ElMessage.error(message)
     return Promise.reject(error)
   },
 )
 
-export function request<T = any>(config: AxiosRequestConfig): Promise<T> {
-  return service(config) as Promise<T>
+interface RequestConfig extends AxiosRequestConfig {
+  url: string
+  params?: any
 }
 
-export default service
+const request = {
+  get<T>(config: RequestConfig): Promise<T> {
+    return http.get(config.url, { params: config.params, ...config }) as unknown as Promise<T>
+  },
+  post<T>(config: RequestConfig): Promise<T> {
+    return http.post(config.url, config.params, config) as unknown as Promise<T>
+  },
+  put<T>(config: RequestConfig): Promise<T> {
+    return http.put(config.url, config.params, config) as unknown as Promise<T>
+  },
+  delete<T>(config: RequestConfig): Promise<T> {
+    return http.delete(config.url, { params: config.params, ...config }) as unknown as Promise<T>
+  },
+}
+
+export default request

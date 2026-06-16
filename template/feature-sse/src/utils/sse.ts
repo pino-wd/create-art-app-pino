@@ -1,4 +1,4 @@
-import { fetchEventSource, EventStreamContentType } from '@microsoft/fetch-event-source'
+import { EventStreamContentType, fetchEventSource } from '@microsoft/fetch-event-source'
 
 export interface SSERequestOptions {
   url: string

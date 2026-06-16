@@ -13,7 +13,7 @@ export function setupBeforeEachGuard(router: Router): void {
     const authStore = useAuthStore()
 
     // 错误页直接放行
-    if (to.name === 'Forbidden' || to.name === 'NotFound') {
+    if (to.name === 'Forbidden' || to.name === 'NotFound' || to.name === 'ServerError') {
       return true
     }
 

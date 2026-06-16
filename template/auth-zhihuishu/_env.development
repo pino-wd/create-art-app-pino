@@ -3,3 +3,9 @@ VITE_AUTH_MODE=dev-token
 
 # API 基础地址
 VITE_API_BASE_URL=http://localhost:3000
+
+# 本地开发 token（首次启动直接进入 Dashboard；生产请改为真实 token 或移至 .env.local）
+VITE_DEV_TOKEN=mock-dev-token-for-local-dev
+
+# 本地开发用户 UID
+VITE_DEV_USER_UID=000000

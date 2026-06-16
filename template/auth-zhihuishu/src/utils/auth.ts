@@ -97,7 +97,8 @@ export function parseCASLOGC(): CasCookieUser | null {
     }
 
     return parsed
-  } catch {
+  }
+  catch {
     return null
   }
 }

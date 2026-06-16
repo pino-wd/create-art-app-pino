@@ -12,26 +12,36 @@
 
 import fs from 'node:fs'
 import path from 'node:path'
+import process from 'node:process'
 import matter from 'gray-matter'
 
 const DOCS_DIR = path.resolve('docs')
 const EXCLUDE_DIRS = new Set(['templates', 'archive'])
 const REQUIRED_FIELDS = ['title', 'type', 'status', 'owner', 'lastReviewed']
 const TYPE_ENUM = new Set([
-  'tutorial', 'guide', 'reference', 'architecture',
-  'adr', 'requirement', 'incident', 'troubleshooting',
+  'tutorial',
+  'guide',
+  'reference',
+  'architecture',
+  'adr',
+  'requirement',
+  'incident',
+  'troubleshooting',
 ])
 const STATUS_ENUM = new Set(['active', 'draft', 'superseded', 'archived'])
 
 function collectMarkdownFiles(dir) {
   const results = []
-  if (!fs.existsSync(dir)) return results
+  if (!fs.existsSync(dir))
+    return results
 
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     const full = path.join(dir, entry.name)
     if (entry.isDirectory()) {
-      if (!EXCLUDE_DIRS.has(entry.name)) results.push(...collectMarkdownFiles(full))
-    } else if (entry.name.endsWith('.md') && entry.name !== '.gitkeep') {
+      if (!EXCLUDE_DIRS.has(entry.name))
+        results.push(...collectMarkdownFiles(full))
+    }
+    else if (entry.name.endsWith('.md') && entry.name !== '.gitkeep') {
       results.push(full)
     }
   }
@@ -80,6 +90,7 @@ for (const file of files) {
 if (hasError) {
   console.error('\n⛔ Frontmatter validation failed.\n')
   process.exit(1)
-} else {
+}
+else {
   console.log('✅ Frontmatter validation passed.')
 }

@@ -2,11 +2,15 @@ import type { AxiosRequestConfig } from 'axios'
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/store/modules/user'
+import { setupMock } from './mock'
 
 const http = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || '',
   timeout: 30000,
 })
+
+// 启用 Mock 拦截器（仅 VITE_MOCK_ENABLED=true 时生效）
+setupMock(http)
 
 // 请求拦截器：注入 token
 http.interceptors.request.use(

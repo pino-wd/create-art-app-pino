@@ -72,7 +72,7 @@ export async function getProjectOptions(argv: Record<string, any>): Promise<Proj
             { title: '.reference 参考项目（克隆 art-design-pro 最新代码）', value: 'reference', selected: true },
             { title: '.vscode 统一编辑器配置', value: 'vscode', selected: true },
             { title: 'AGENTS.md AI 开发约束文件', value: 'agentsMd', selected: true },
-            { title: '文档治理（docs/ + 4 道护栏 + PR 模板）', value: 'docGovernance', selected: true },
+            { title: '文档治理（docs/ + 4 道护栏）', value: 'docGovernance', selected: true },
           ],
         },
         {

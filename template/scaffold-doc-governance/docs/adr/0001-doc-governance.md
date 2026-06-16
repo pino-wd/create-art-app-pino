@@ -75,16 +75,16 @@ project/
 
 ### 3. 文档分类
 
-| 类型 | 存放位置 | 使用场景 |
-| --- | --- | --- |
-| 快速开始 | `getting-started/` | 新人接入、本地启动 |
-| 操作指南 | `guides/` | 新增页面、路由、菜单、权限、组件 |
-| 参考文档 | `reference/` | 配置项、目录结构、CLI、权限、路由、组件 API |
-| 架构文档 | `architecture/` | 模块边界、运行流程、核心设计 |
-| 需求记录 | `changes/requirements/` | 重要需求、通用能力、复杂改造 |
-| 异常记录 | `maintenance/incidents/` | 线上故障、严重缺陷、重复问题 |
-| 排障手册 | `maintenance/troubleshooting.md` | 高频问题、常见错误、处理方式 |
-| 决策记录 | `adr/` | 技术选型、架构调整、关键方案取舍 |
+| 类型     | 存放位置                         | 使用场景                                    |
+| -------- | -------------------------------- | ------------------------------------------- |
+| 快速开始 | `getting-started/`               | 新人接入、本地启动                          |
+| 操作指南 | `guides/`                        | 新增页面、路由、菜单、权限、组件            |
+| 参考文档 | `reference/`                     | 配置项、目录结构、CLI、权限、路由、组件 API |
+| 架构文档 | `architecture/`                  | 模块边界、运行流程、核心设计                |
+| 需求记录 | `changes/requirements/`          | 重要需求、通用能力、复杂改造                |
+| 异常记录 | `maintenance/incidents/`         | 线上故障、严重缺陷、重复问题                |
+| 排障手册 | `maintenance/troubleshooting.md` | 高频问题、常见错误、处理方式                |
+| 决策记录 | `adr/`                           | 技术选型、架构调整、关键方案取舍            |
 
 ### 4. 命名与 frontmatter 规范
 
@@ -102,9 +102,9 @@ project/
 title: 文档标题
 type: tutorial | guide | reference | architecture | adr | requirement | incident | troubleshooting
 status: active | superseded | archived
-owner: "@username"
+owner: '@username'
 lastReviewed: YYYY-MM-DD
-supersededBy: docs/path/to/new.md   # 仅 superseded/archived 时填
+supersededBy: docs/path/to/new.md # 仅 superseded/archived 时填
 relatedADR: [ADR-0001]
 relatedRequirements: [YYYY-MM-DD-name]
 ---
@@ -145,12 +145,12 @@ draft ──→ active ──┬──→ superseded （被新版本取代，必
 
 必须配 4 道护栏。脚本统一放 `scripts/docs/`，命令出口为 `pnpm docs:lint`：
 
-| 护栏 | 工具 | 不通过则 |
-| --- | --- | --- |
-| Frontmatter 必填字段 + 枚举值 | `lint-frontmatter.mjs` | 阻断合并 |
-| 文档命名（kebab-case + 禁版本号 + 日期/编号前缀） | `lint-naming.mjs` | 阻断提交 |
-| 私人绝对路径黑名单 | `lint-no-private-path.sh` | 阻断提交 |
-| Markdown 死链 | `lint-links.sh`（lychee） | 阻断合并 |
+| 护栏                                              | 工具                      | 不通过则 |
+| ------------------------------------------------- | ------------------------- | -------- |
+| Frontmatter 必填字段 + 枚举值                     | `lint-frontmatter.mjs`    | 阻断合并 |
+| 文档命名（kebab-case + 禁版本号 + 日期/编号前缀） | `lint-naming.mjs`         | 阻断提交 |
+| 私人绝对路径黑名单                                | `lint-no-private-path.sh` | 阻断提交 |
+| Markdown 死链                                     | `lint-links.sh`（lychee） | 阻断合并 |
 
 ### 10. AGENTS.md 边界
 

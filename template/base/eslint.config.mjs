@@ -8,4 +8,9 @@ export default antfu({
     html: true,
     markdown: true,
   },
+}, {
+  files: ['scripts/**/*.mjs'],
+  rules: {
+    'node/prefer-global/process': 'off',
+  },
 })

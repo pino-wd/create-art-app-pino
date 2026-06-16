@@ -1,11 +1,24 @@
 {
-  "extends": "./tsconfig.json",
   "compilerOptions": {
-    "composite": true,
-    "baseUrl": ".",
+    "target": "ES2020",
+    "jsx": "preserve",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "paths": {
-      "@/*": ["./src/*"]
-    }
+      "@/*": ["./src/*"],
+      "@views/*": ["./src/views/*"],
+      "@imgs/*": ["./src/assets/images/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@stores/*": ["./src/store/*"],
+      "@styles/*": ["./src/assets/styles/*"]
+    },
+    "resolveJsonModule": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "skipLibCheck": true
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "env.d.ts", "auto-imports.d.ts", "components.d.ts"],
   "exclude": ["src/**/__tests__/*"]

@@ -32,12 +32,28 @@
     "prompts": "^2.4.2"
   },
   "devDependencies": {
+    "@element-plus/icons-vue": "^2.3.2",
+    "@iconify/vue": "^5.0.1",
     "@types/ejs": "^3.1.5",
     "@types/minimist": "^1.2.5",
     "@types/node": "^22.10.0",
+    "@types/nprogress": "^0.2.3",
     "@types/prompts": "^2.4.9",
+    "@vueuse/core": "^14.3.0",
+    "axios": "^1.18.0",
+    "echarts": "^6.1.0",
+    "element-plus": "^2.14.2",
+    "highlight.js": "^11.11.1",
+    "mitt": "^3.0.1",
+    "nprogress": "^0.2.0",
+    "ohash": "^2.0.11",
+    "pinia": "^3.0.4",
+    "pinia-plugin-persistedstate": "^4.7.1",
     "tsup": "^8.3.5",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "vue": "^3.5.38",
+    "vue-i18n": "^11.4.5",
+    "vue-router": "^5.1.0"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
