@@ -14,8 +14,19 @@ const mockRoutes: MockRoute[] = [
     url: '/api/auth/login',
     handler: (config) => {
       const body = typeof config.data === 'string' ? JSON.parse(config.data) : config.data
-      if (body?.userName === 'admin' && body?.password === 'admin') {
-        return { code: 0, data: { token: MOCK_TOKEN, refreshToken: MOCK_TOKEN } }
+      const username = body?.userName?.toLowerCase()
+      const password = body?.password
+
+      const isValid = (
+        (username === 'super' && password === '123456') ||
+        (username === 'admin' && password === '123456') ||
+        (username === 'user' && password === '123456') ||
+        (username === 'admin' && password === 'admin')
+      )
+
+      if (isValid) {
+        const role = username === 'super' ? 'R_SUPER' : (username === 'user' ? 'R_USER' : 'R_ADMIN')
+        return { code: 0, data: { token: `${MOCK_TOKEN}-${role}`, refreshToken: MOCK_TOKEN } }
       }
       return { code: 401, message: '用户名或密码错误' }
     },
@@ -23,9 +34,30 @@ const mockRoutes: MockRoute[] = [
   {
     method: 'get',
     url: '/api/user/info',
+    handler: (config) => {
+      const authHeader = (config.headers as any)?.Authorization as string || ''
+      const role = authHeader.includes('R_ADMIN') ? 'R_ADMIN' : (authHeader.includes('R_USER') ? 'R_USER' : 'R_SUPER')
+      const name = role === 'R_SUPER' ? 'Super' : (role === 'R_USER' ? 'User' : 'Admin')
+
+      return {
+        code: 0,
+        data: { userId: 1, userName: name, roles: [role], avatar: '/src/assets/images/user/avatar.webp' },
+      }
+    },
+  },
+  {
+    method: 'get',
+    url: '/api/v3/system/menus',
     handler: () => ({
       code: 0,
-      data: { userId: 1, userName: 'admin', roles: ['admin'] },
+      data: [
+        {
+          path: '/dashboard',
+          name: 'Dashboard',
+          component: '/dashboard/console/index',
+          meta: { title: '仪表盘', icon: 'ep:home-filled' },
+        }
+      ],
     }),
   },
 ]

@@ -3,3 +3,6 @@ VITE_API_BASE_URL=http://localhost:3000
 
 # 本地 Mock 模式（admin/admin 即可登录，无需真实后端）
 VITE_MOCK_ENABLED=true
+
+# 路由权限模式（frontend：前端静态菜单，backend：后端接口动态获取）
+VITE_ACCESS_MODE=frontend

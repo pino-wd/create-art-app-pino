@@ -77,9 +77,7 @@
               <ElCheckbox v-model="formData.rememberPassword">{{
                 $t('login.rememberPwd')
               }}</ElCheckbox>
-              <RouterLink class="text-theme" :to="{ name: 'ForgetPassword' }">{{
-                $t('login.forgetPwd')
-              }}</RouterLink>
+              <span class="text-theme cursor-pointer">{{ $t('login.forgetPwd') }}</span>
             </div>
 
             <div style="margin-top: 30px">
@@ -96,9 +94,7 @@
 
             <div class="mt-5 text-sm text-gray-600">
               <span>{{ $t('login.noAccount') }}</span>
-              <RouterLink class="text-theme" :to="{ name: 'Register' }">{{
-                $t('login.register')
-              }}</RouterLink>
+              <span class="text-theme cursor-pointer ml-1">{{ $t('login.register') }}</span>
             </div>
           </ElForm>
         </div>

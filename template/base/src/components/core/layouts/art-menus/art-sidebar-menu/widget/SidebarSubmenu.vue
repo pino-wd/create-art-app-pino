@@ -37,6 +37,8 @@
 
   const emit = defineEmits<Emits>()
 
+  defineOptions({ inheritAttrs: false })
+
   const settingStore = useSettingStore()
 
   const { menuOpen } = storeToRefs(settingStore)

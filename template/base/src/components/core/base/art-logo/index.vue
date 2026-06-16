@@ -1,7 +1,7 @@
-<!-- 系统logo -->
 <template>
-  <div class="flex-cc">
-    <img :style="logoStyle" src="@imgs/common/logo.webp" alt="logo" class="w-full h-full" />
+  <div class="flex-cc" v-bind="$attrs">
+    <!-- 系统logo -->
+    <img :style="logoStyle" src="@/assets/images/common/logo.webp" alt="logo" class="w-full h-full" />
   </div>
 </template>
 

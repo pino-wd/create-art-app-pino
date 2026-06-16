@@ -4,15 +4,35 @@ import { createRouter, <%- options.routerMode === 'hash' ? 'createWebHashHistory
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    name: 'Layout',
+    redirect: '/dashboard/console',
+  },
+  {
+    path: '/dashboard',
+    name: 'Dashboard',
     component: () => import('@/views/index/index.vue'),
-    redirect: '/dashboard',
+    redirect: '/dashboard/console',
+    meta: { title: '仪表盘', icon: 'ri:pie-chart-line' },
     children: [
       {
-        path: 'dashboard',
-        name: 'Dashboard',
+        path: 'console',
+        name: 'Console',
         component: () => import('@/views/dashboard/console/index.vue'),
-        meta: { title: '仪表盘', icon: 'ep:home-filled' },
+        meta: {
+          title: '工作台',
+          icon: 'ri:home-smile-2-line',
+          keepAlive: false,
+          fixedTab: true,
+        },
+      },
+      {
+        path: 'analysis',
+        name: 'Analysis',
+        component: () => import('@/views/dashboard/analysis/index.vue'),
+        meta: {
+          title: '分析页',
+          icon: 'ri:align-item-bottom-line',
+          keepAlive: false,
+        },
       },
     ],
   },

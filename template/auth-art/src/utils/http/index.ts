@@ -27,7 +27,17 @@ http.interceptors.request.use(
 // 响应拦截器：处理 401 和业务错误
 http.interceptors.response.use(
   (response) => {
-    return response.data
+    const res = response.data
+    // 剥离业务响应包装
+    if (res && typeof res === 'object' && 'code' in res) {
+      if (res.code === 0) {
+        return res.data
+      }
+      const message = res.message || '请求失败'
+      ElMessage.error(message)
+      return Promise.reject(new Error(message))
+    }
+    return res
   },
   (error) => {
     if (error.response?.status === 401) {

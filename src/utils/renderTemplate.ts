@@ -3,6 +3,25 @@ import path from 'node:path'
 import ejs from 'ejs'
 import type { ProjectOptions } from '../prompts'
 
+const BINARY_EXTENSIONS = new Set([
+  '.png',
+  '.jpg',
+  '.jpeg',
+  '.webp',
+  '.gif',
+  '.ico',
+  '.bmp',
+  '.avif',
+  '.pdf',
+  '.zip',
+  '.gz',
+  '.tgz',
+  '.woff',
+  '.woff2',
+  '.ttf',
+  '.eot',
+])
+
 /**
  * Render a template directory to the target directory
  * - Regular files: copy as-is
@@ -44,18 +63,21 @@ async function renderFile(
   options: ProjectOptions,
 ): Promise<void> {
   let destName = fileName
-  let content: string
+  let textContent: string | null = null
+  let binaryContent: Buffer | null = null
 
   if (fileName.endsWith('.ejs')) {
     // EJS template: compile and remove .ejs extension
     destName = fileName.slice(0, -4)
     const template = fs.readFileSync(srcPath, 'utf-8')
-    content = ejs.render(template, { options })
+    textContent = ejs.render(template, { options })
 
     // Skip empty output (EJS condition evaluated to nothing)
-    if (!content.trim()) return
+    if (!textContent.trim()) return
+  } else if (isBinaryTemplateFile(srcPath)) {
+    binaryContent = fs.readFileSync(srcPath)
   } else {
-    content = fs.readFileSync(srcPath, 'utf-8')
+    textContent = fs.readFileSync(srcPath, 'utf-8')
   }
 
   // Rename _ prefix to . prefix
@@ -65,7 +87,19 @@ async function renderFile(
 
   const destPath = path.join(targetDir, destName)
   fs.mkdirSync(path.dirname(destPath), { recursive: true })
-  fs.writeFileSync(destPath, content)
+  if (binaryContent) {
+    fs.writeFileSync(destPath, binaryContent)
+    return
+  }
+
+  fs.writeFileSync(destPath, textContent ?? '')
+}
+
+/**
+ * 判断模板文件是否需要按二进制原样复制，避免图片字体等资源被 UTF-8 转码破坏。
+ */
+function isBinaryTemplateFile(filePath: string): boolean {
+  return BINARY_EXTENSIONS.has(path.extname(filePath).toLowerCase())
 }
 
 /**
