@@ -27,7 +27,7 @@ Accepted
 2. Markdown + Git 追踪历史。
 3. 重要变化必须可追溯；小改动豁免。
 4. 服务于维护，不追求形式完整。
-5. 任何文档必须有明确状态（`active` / `superseded` / `archived`）；非 active 文档必须迁出主目录。
+5. 任何文档必须有明确状态（`draft` / `active` / `superseded` / `archived`）；非 active 文档必须迁出主目录。
 6. 文件名一律 kebab-case，禁止把版本号塞进文件名；版本号写进 frontmatter 或正文。
 7. 跨文档引用必须使用仓库相对路径，禁止私人绝对路径或外部 IM 缓存路径。
 
@@ -101,16 +101,21 @@ project/
 ---
 title: 文档标题
 type: tutorial | guide | reference | architecture | adr | requirement | incident | troubleshooting
-status: active | superseded | archived
+status: draft | active | superseded | archived
 owner: '@username'
 lastReviewed: YYYY-MM-DD
-supersededBy: docs/path/to/new.md # 仅 superseded/archived 时填
+supersededBy: docs/path/to/new.md # 仅 superseded 时强制，archived 可选
 relatedADR: [ADR-0001]
 relatedRequirements: [YYYY-MM-DD-name]
 ---
 ```
 
 缺字段 / status 非法 / superseded 但未填 supersededBy → 阻断合并。
+
+补充约束：
+
+- `templates/` 与 `archive/` 不参与 frontmatter 与命名校验。
+- 私人绝对路径与死链检查仍覆盖整个 `docs/` 目录。
 
 ### 5. 文档状态机
 

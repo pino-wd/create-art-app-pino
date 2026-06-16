@@ -1,0 +1,2 @@
+pnpm check:commit:fix
+bash scripts/docs/lint-no-private-path.sh

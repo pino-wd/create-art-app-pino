@@ -27,7 +27,7 @@ lastReviewed: 2026-01-01
 
 ## 文档治理
 
-本项目遵循 [ADR-0001 文档治理方案](adr/0001-doc-governance.md)。所有文档必须：
+本项目遵循 [ADR-0001 文档治理方案](adr/0001-doc-governance.md)。主文档区（不含 `templates/` 与 `archive/`）下的 Markdown 文档必须：
 
 1. 包含合规的 YAML frontmatter（title / type / status / owner / lastReviewed）
 2. 使用 kebab-case 命名

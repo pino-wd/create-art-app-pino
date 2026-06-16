@@ -32,7 +32,7 @@ lastReviewed: 2026-01-01
 
 `docs:lint` 依次执行：
 
-1. **lint-frontmatter** — 校验 frontmatter 必填字段与枚举值
+1. **lint-frontmatter** — 校验主文档区 frontmatter 必填字段与枚举值
 2. **lint-naming** — 校验文件名 kebab-case、日期前缀、ADR 编号前缀
 3. **lint-no-private-path** — 检测私人绝对路径（`/Users/`、`/home/`）
 4. **lint-links** — 检测死链（需安装 [lychee](https://github.com/lycheeverse/lychee)，未安装则跳过）

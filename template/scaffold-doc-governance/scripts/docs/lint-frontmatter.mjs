@@ -7,6 +7,7 @@
  * Required fields: title, type, status, owner, lastReviewed
  * type  enum: tutorial | guide | reference | architecture | adr | requirement | incident | troubleshooting
  * status enum: active | draft | superseded | archived
+ * templates/ and archive/ are excluded from this lint
  * status=superseded → supersededBy field required
  */
 

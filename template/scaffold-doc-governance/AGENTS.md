@@ -16,7 +16,7 @@
 
 核心规则：
 
-- 所有 `docs/` 下文档必须包含合规 frontmatter。
+- 主文档区（不含 `templates/` 与 `archive/`）下的 Markdown 文档必须包含合规 frontmatter。
 - 文件名一律 kebab-case。
 - 禁止私人绝对路径。
 - 变更文档时同步更新 CHANGELOG.md。
