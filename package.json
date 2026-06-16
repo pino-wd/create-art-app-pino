@@ -1,6 +1,6 @@
 {
   "name": "create-art-app-pino",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "CLI scaffold tool for creating Art Design Pro based projects",
   "type": "module",
   "bin": {
