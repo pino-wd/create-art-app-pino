@@ -8,7 +8,13 @@
   },
   "files": [
     "dist",
-    "template"
+    "template",
+    "!template/**/node_modules",
+    "!template/**/node_modules/**",
+    "!template/**/pnpm-lock.yaml",
+    "!template/**/package-lock.json",
+    "!template/**/yarn.lock",
+    "!template/**/bun.lockb"
   ],
   "scripts": {
     "dev": "tsup --watch",

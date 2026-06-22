@@ -27,8 +27,7 @@ export async function generate(options: ProjectOptions, targetDir: string): Prom
   if (options.scaffold.docGovernance) {
     const dgDir = path.join(templateRoot, 'scaffold-doc-governance')
     if (fs.existsSync(dgDir)) {
-      mergeTemplatePackageJson(dgDir, targetDir)
-      await renderTemplate(dgDir, targetDir, options, ['package.json'])
+      await renderTemplate(dgDir, targetDir, options)
     }
   }
 

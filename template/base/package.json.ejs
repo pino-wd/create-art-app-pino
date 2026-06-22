@@ -5,21 +5,17 @@
   "private": true,
   "scripts": {
     "dev": "vite",
-    "build": "pnpm build-only",
-    "build-only": "vite build",
+    "build": "vite build",
     "preview": "vite preview",
-    "check:commit": "run-s check:commit:fix type-check",
-    "check:commit:fix": "lint-staged",
-<% if (options.scaffold.docGovernance) { %>    "docs:lint": "node scripts/docs/lint-frontmatter.mjs && node scripts/docs/lint-naming.mjs && bash scripts/docs/lint-no-private-path.sh && bash scripts/docs/lint-links.sh",
-    "check:push": "run-s lint type-check docs:lint",
-<% } else { %>    "check:push": "run-s lint type-check",
-<% } %>
     "type-check": "run-p type-check:app type-check:node",
     "type-check:app": "vue-tsc --noEmit -p tsconfig.app.json",
     "type-check:node": "tsc --noEmit -p tsconfig.node.json",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "prepare": "husky"
+    "lint:fix": "eslint . --fix"<% if (options.scaffold.docGovernance) { %>,
+    "docs:lint": "node scripts/docs/lint-frontmatter.mjs && node scripts/docs/lint-naming.mjs && node scripts/docs/lint-no-private-path.mjs && node scripts/docs/lint-links.mjs"<% } %><% if (options.scaffold.commitChecks) { %>,
+    "check:commit:fix": "lint-staged",
+    "check:push": "<%= options.scaffold.docGovernance ? 'run-s lint type-check docs:lint' : 'run-s lint type-check' %>",
+    "prepare": "husky"<% } %>
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
@@ -40,15 +36,17 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.13.0",
-    "@commitlint/cli": "^19.8.1",
-    "@commitlint/config-conventional": "^19.8.1",
     "@types/nprogress": "^0.2.3",
     "@tailwindcss/vite": "^4.1.8",
     "@vitejs/plugin-vue": "^5.2.3",
     "eslint": "^9.27.0",
     "eslint-plugin-format": "^1.0.1",
+<% if (options.scaffold.docGovernance) { %>    "gray-matter": "^4.0.3",
+<% } %><% if (options.scaffold.commitChecks) { %>    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.0",
+<% } %>
     "npm-run-all2": "^8.0.4",
     "sass": "^1.81.0",
     "tailwindcss": "^4.1.8",
@@ -59,8 +57,8 @@
     "vite": "^6.3.5",
     "vite-plugin-vue-devtools": "^8.1.2",
     "vue-tsc": "^2.2.10"
-  },
+  }<% if (options.packageManager === 'pnpm') { %>,
   "pnpm": {
     "onlyBuiltDependencies": ["@parcel/watcher", "esbuild"]
-  }
+  }<% } %>
 }

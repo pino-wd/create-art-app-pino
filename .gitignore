@@ -2,3 +2,4 @@ node_modules/
 dist/
 _test-output/
 *.local
+template/**/node_modules/

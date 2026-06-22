@@ -22,6 +22,16 @@ const BINARY_EXTENSIONS = new Set([
   '.eot',
 ])
 
+const IGNORED_TEMPLATE_ENTRIES = new Set([
+  '.DS_Store',
+  'node_modules',
+  'dist',
+  'pnpm-lock.yaml',
+  'package-lock.json',
+  'yarn.lock',
+  'bun.lockb',
+])
+
 /**
  * Render a template directory to the target directory
  * - Regular files: copy as-is
@@ -40,7 +50,8 @@ export async function renderTemplate(
   const files = fs.readdirSync(templateDir)
 
   for (const file of files) {
-    if (skipFiles.includes(file)) continue
+    if (skipFiles.includes(file) || shouldIgnoreTemplateEntry(file)) continue
+    if (!file.endsWith('.ejs') && files.includes(`${file}.ejs`)) continue
 
     const srcPath = path.join(templateDir, file)
     const srcStat = fs.statSync(srcPath)
@@ -141,4 +152,8 @@ function getAllFiles(dir: string): string[] {
   }
 
   return results
+}
+
+function shouldIgnoreTemplateEntry(entryName: string): boolean {
+  return IGNORED_TEMPLATE_ENTRIES.has(entryName)
 }

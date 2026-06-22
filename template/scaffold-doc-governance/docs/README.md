@@ -32,4 +32,4 @@ lastReviewed: 2026-01-01
 1. 包含合规的 YAML frontmatter（title / type / status / owner / lastReviewed）
 2. 使用 kebab-case 命名
 3. 禁止私人绝对路径
-4. 通过 `pnpm docs:lint` 检查
+4. 通过 `package.json` 中的 `docs:lint` 脚本检查

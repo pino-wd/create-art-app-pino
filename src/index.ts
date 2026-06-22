@@ -8,8 +8,8 @@ import { postGenerate } from './postActions'
 
 async function main(): Promise<void> {
   const argv = minimist(process.argv.slice(2), {
-    boolean: ['default', 'history', 'hash'],
-    string: ['auth'],
+    boolean: ['default', 'history', 'hash', 'git', 'hooks'],
+    string: ['auth', 'package-manager'],
   })
 
   showBanner()

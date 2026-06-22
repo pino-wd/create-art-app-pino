@@ -2,7 +2,7 @@
 
 基于 [Art Design Pro](https://github.com/Daymychen/art-design-pro) 的 Vue 3 项目脚手架 CLI。
 
-一条命令生成包含认证、路由、工程化、文档治理的完整前端项目，生成后独立演进，CLI 不再介入。
+一条命令生成包含认证、路由、工程化选项、文档治理选项的完整前端项目，生成后独立演进，CLI 不再介入。
 
 ## 快速开始
 
@@ -24,8 +24,11 @@ pnpm create art-app-pino my-project --default
 | `--default` | 跳过所有交互，使用默认值 | — |
 | `--auth art` | Art 内置登录页 | `art` |
 | `--auth zhs` | 智慧树 CAS 统一认证 | — |
+| `--package-manager npm` | 使用 npm 作为包管理器 | `pnpm` |
 | `--history` | History 路由模式 | ✅ |
 | `--hash` | Hash 路由模式 | — |
+| `--no-git` | 不执行 `git init` | — |
+| `--no-hooks` | 不生成 Husky / lint-staged / commitlint | — |
 | `--no-reference` | 不克隆 `.reference/art-design-pro` | — |
 | `--no-vscode` | 不生成 `.vscode/` 配置 | — |
 | `--no-agents` | 不生成 `AGENTS.md` | — |
@@ -37,8 +40,11 @@ pnpm create art-app-pino my-project --default
 # 智慧树认证 + Hash 路由 + 不克隆 reference
 pnpm create art-app-pino my-app --auth zhs --hash --no-reference
 
+# npm + 关闭 Git 初始化与提交校验
+pnpm create art-app-pino my-app --package-manager npm --no-git --no-hooks
+
 # 最小化项目
-pnpm create art-app-pino my-app --default --no-reference --no-vscode --no-doc-governance
+pnpm create art-app-pino my-app --default --no-reference --no-vscode --no-hooks --no-doc-governance
 ```
 
 ## 生成项目的技术栈
@@ -46,7 +52,7 @@ pnpm create art-app-pino my-app --default --no-reference --no-vscode --no-doc-go
 - **框架**：Vue 3 + TypeScript + Vite
 - **UI**：Element Plus + Tailwind CSS v4
 - **状态管理**：Pinia + pinia-plugin-persistedstate
-- **工程化**：ESLint + Husky + lint-staged + commitlint
+- **工程化**（可选）：ESLint + Husky + lint-staged + commitlint
 - **文档治理**（可选）：frontmatter 校验 + 命名规范 + 私人路径检测 + 死链检测
 
 ## 交互式选项
@@ -75,6 +81,8 @@ pnpm create art-app-pino my-app --default --no-reference --no-vscode --no-doc-go
 | `.reference` | 克隆 art-design-pro 作为参考代码 | ✅ |
 | `.vscode` | 统一编辑器配置 | ✅ |
 | `AGENTS.md` | AI 开发约束文件 | ✅ |
+| Git 初始化 | 执行 `git init` | ✅ |
+| 提交校验 | Husky + lint-staged + commitlint | ✅ |
 | 文档治理 | `docs/` 骨架 + 4 道护栏 + PR 模板 | ✅ |
 
 ## 版本标记与升级迁移
@@ -179,6 +187,7 @@ git push --follow-tags
 ```
 
 发布后用户即可通过 `pnpm create art-app-pino` 使用最新版本。
+
 ## 项目结构
 
 ```

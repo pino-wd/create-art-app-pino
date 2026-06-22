@@ -14,7 +14,9 @@ export async function postGenerate(options: ProjectOptions, targetDir: string): 
   }
 
   // Initialize git repository
-  await initGit(targetDir)
+  if (options.scaffold.gitInit) {
+    await initGit(targetDir)
+  }
 
   // Prompt user to install deps (don't auto-install to keep it fast)
   console.log()

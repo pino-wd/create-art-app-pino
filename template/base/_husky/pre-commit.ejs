@@ -1,3 +1,3 @@
-pnpm check:commit:fix
-<% if (options.scaffold.docGovernance) { %>bash scripts/docs/lint-no-private-path.sh
-<% } %>
+<% if (options.scaffold.commitChecks) { %><%= options.packageManager === 'npm' ? 'npm run' : options.packageManager %> check:commit:fix
+<% if (options.scaffold.docGovernance) { %>node scripts/docs/lint-no-private-path.mjs
+<% } %><% } %>

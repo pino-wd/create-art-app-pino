@@ -1,4 +1,4 @@
-<% if (options.scaffold.agentsMd) { %><% if (options.scaffold.docGovernance) { %># AGENTS.md
+<% if (options.scaffold.agentsMd) { %><% const runScript = options.packageManager === 'npm' ? 'npm run' : options.packageManager %><% if (options.scaffold.docGovernance) { %># AGENTS.md
 
 ## 项目硬约束
 
@@ -21,14 +21,14 @@
 - 禁止私人绝对路径。
 - 变更文档时同步更新 CHANGELOG.md。
 
-## 提交前必跑命令
+## 检查命令
 
 详见 [`docs/reference/cli.md`](docs/reference/cli.md)。
 
 ```bash
-<%= options.packageManager === 'npm' ? 'npm run' : options.packageManager %> lint
-<%= options.packageManager === 'npm' ? 'npm run' : options.packageManager %> type-check
-<%= options.packageManager === 'npm' ? 'npm run' : options.packageManager %> docs:lint
+<%= runScript %> lint
+<%= runScript %> type-check
+<%= runScript %> docs:lint
 ```
 <% } else { %># AGENTS.md
 
@@ -62,4 +62,12 @@
 ## 文档同步要求
 
 当页面入口、路由、模块定位或实现口径变化时，必须同步检查 `docs/` 中相关规划、设计和偏差分析文档，避免文档继续描述已经删除或尚未实现的能力。
+
+<% if (options.scaffold.commitChecks) { %>## 检查命令
+
+```bash
+<%= runScript %> lint
+<%= runScript %> type-check
+```
+<% } %>
 <% } %><% } %>
