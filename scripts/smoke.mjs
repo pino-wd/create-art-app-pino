@@ -133,6 +133,13 @@ function assertCommonArtifacts(projectDir) {
 
   assert(fs.existsSync(path.join(projectDir, 'src', 'router', 'index.ts')), '应存在 src/router/index.ts（auth overlay 提供）')
   assert(fs.existsSync(path.join(projectDir, 'src', 'utils', 'http', 'index.ts')), '应存在 src/utils/http/index.ts（auth overlay 提供）')
+
+  // 双下划线命名（如 __tests__）不得被 _ 前缀→. 前缀的重命名规则波及
+  const mangledEntries = walkFiles(projectDir).filter(f => f.split('/').some(seg => seg.startsWith('._')))
+  assert(
+    mangledEntries.length === 0,
+    `不应存在 ._ 开头的变形路径（__tests__ 误重命名），实际：${mangledEntries.slice(0, 10).join(', ')}`,
+  )
 }
 
 /** overlay 方向断言：art 与 zhihuishu 互斥产物 */
@@ -143,6 +150,10 @@ function assertAuthOverlayDirection(combo, projectDir) {
   if (combo.auth === 'zhihuishu') {
     assert(fs.existsSync(authService), 'zhihuishu 认证应生成 src/services/authService.ts')
     assert(!fs.existsSync(loginPage), 'zhihuishu 认证不应存在 Art 登录页 src/pages/auth/login/index.vue')
+    assert(
+      fs.existsSync(path.join(projectDir, 'src', 'utils', '__tests__', 'auth.spec.ts')),
+      'zhihuishu 认证应生成示例测试 src/utils/__tests__/auth.spec.ts',
+    )
   } else {
     assert(fs.existsSync(loginPage), 'art 认证应生成登录页 src/pages/auth/login/index.vue')
     assert(!fs.existsSync(authService), 'art 认证不应存在 src/services/authService.ts')

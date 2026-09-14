@@ -1,6 +1,6 @@
 {
   "name": "create-art-app-pino",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "CLI scaffold tool for creating Art Design Pro based projects",
   "type": "module",
   "bin": {
@@ -9,6 +9,7 @@
   "files": [
     "dist",
     "template",
+    "MIGRATION.md",
     "!template/**/node_modules",
     "!template/**/node_modules/**",
     "!template/**/pnpm-lock.yaml",
@@ -21,10 +22,14 @@
     "build": "tsup",
     "start": "node dist/index.cjs",
     "test:smoke": "pnpm build && node scripts/smoke.mjs",
-    "prepublishOnly": "pnpm build"
+    "prepublishOnly": "pnpm build && node scripts/prepublish-check.mjs"
   },
   "engines": {
     "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pino-wd/create-art-app-pino.git"
   },
   "keywords": [
     "cli",

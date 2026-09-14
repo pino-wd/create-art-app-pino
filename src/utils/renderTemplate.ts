@@ -57,7 +57,7 @@ export async function renderTemplate(
     const srcStat = fs.statSync(srcPath)
 
     if (srcStat.isDirectory()) {
-      const destName = file.startsWith('_') ? `.${file.slice(1)}` : file
+      const destName = resolveTemplateEntryName(file)
       const destDir = path.join(targetDir, destName)
       fs.mkdirSync(destDir, { recursive: true })
       await renderTemplate(srcPath, destDir, options, skipFiles)
@@ -65,6 +65,17 @@ export async function renderTemplate(
       await renderFile(srcPath, targetDir, file, options)
     }
   }
+}
+
+/**
+ * 模板条目重命名：单下划线前缀转为点前缀（_gitignore → .gitignore）。
+ * 双下划线前缀（如 __tests__）属目录命名约定，保持原样。
+ */
+function resolveTemplateEntryName(name: string): string {
+  if (name.startsWith('_') && !name.startsWith('__')) {
+    return `.${name.slice(1)}`
+  }
+  return name
 }
 
 async function renderFile(
@@ -92,9 +103,7 @@ async function renderFile(
   }
 
   // Rename _ prefix to . prefix
-  if (destName.startsWith('_')) {
-    destName = `.${destName.slice(1)}`
-  }
+  destName = resolveTemplateEntryName(destName)
 
   const destPath = path.join(targetDir, destName)
   fs.mkdirSync(path.dirname(destPath), { recursive: true })
