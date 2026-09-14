@@ -7,8 +7,9 @@ interface FeatureDepConfig {
 
 /**
  * Pure dependency features — only add deps to package.json, no template directory needed
+ * key 收敛到 Feature：markdown/sse 为模板型特性，不在此登记纯依赖
  */
-export const FEATURE_DEPS: Record<string, FeatureDepConfig> = {
+export const FEATURE_DEPS: Partial<Record<Feature, FeatureDepConfig>> = {
   draggable: { deps: { 'vue-draggable-plus': '^0.5.6' } },
   dayjs: { deps: { dayjs: '^1.11.13' } },
 }
@@ -16,12 +17,12 @@ export const FEATURE_DEPS: Record<string, FeatureDepConfig> = {
 /**
  * Template-based features — have their own template directory
  */
-export const TEMPLATE_FEATURES: readonly string[] = ['markdown', 'sse']
+export const TEMPLATE_FEATURES: readonly Feature[] = ['markdown', 'sse']
 
 /**
  * Check if a feature has a template directory
  */
-export function hasTemplateDir(feature: string): boolean {
+export function hasTemplateDir(feature: Feature): boolean {
   return TEMPLATE_FEATURES.includes(feature)
 }
 

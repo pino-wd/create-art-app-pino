@@ -106,12 +106,12 @@ export async function getProjectOptions(argv: Record<string, any>): Promise<Proj
   }
 
   // Resolve values with CLI args and defaults
-  const projectName = argProjectName || result.projectName || 'my-project'
+  // prompts 返回值是弱类型（any），逐字段经 normalize 函数收敛为 ProjectOptions 的显式类型，
+  // 避免 as 断言掩盖非法输入；各函数对空值/非法值均有兜底。
+  const projectName = resolveProjectName(argProjectName, result.projectName)
   const auth = normalizeAuth(argv.auth || result.auth || 'art')
-  const routerMode = argv.hash ? 'hash' : (argv.history ? 'history' : (result.routerMode || 'history'))
-  const features = defaultMode
-    ? ['markdown', 'sse', 'draggable', 'dayjs']
-    : (result.features || ['markdown', 'sse', 'draggable', 'dayjs'])
+  const routerMode = resolveRouterMode(argv, result.routerMode)
+  const features = normalizeFeatures(defaultMode ? undefined : result.features)
   const scaffoldChoices: string[] = defaultMode
     ? ['reference', 'vscode', 'agentsMd', 'gitInit', 'commitChecks', 'docGovernance']
     : (result.scaffold || ['reference', 'vscode', 'agentsMd', 'gitInit', 'commitChecks', 'docGovernance'])
@@ -136,7 +136,37 @@ export async function getProjectOptions(argv: Record<string, any>): Promise<Proj
     features,
     scaffold,
     packageManager,
-  } as ProjectOptions
+  }
+}
+
+const DEFAULT_FEATURES: Feature[] = ['markdown', 'sse', 'draggable', 'dayjs']
+
+/**
+ * 项目名收敛：CLI 参数优先，其次交互输入，兜底默认值；非字符串输入回退默认值
+ */
+function resolveProjectName(cliArg: string | undefined, prompted: unknown): string {
+  if (cliArg) return cliArg
+  if (typeof prompted === 'string' && prompted) return prompted
+  return 'my-project'
+}
+
+/**
+ * 路由模式：--hash/--history 显式指定优先，否则取交互结果，未知值回退 history
+ */
+function resolveRouterMode(argv: Record<string, any>, prompted: unknown): ProjectOptions['routerMode'] {
+  if (argv.hash) return 'hash'
+  if (argv.history) return 'history'
+  return prompted === 'hash' ? 'hash' : 'history'
+}
+
+/**
+ * 功能列表收敛到 Feature 联合类型：未知值剔除；未提供（含 --default 与全不选分支出参）
+ * 时使用默认全集，用户显式全不选（空数组）时保留空集
+ */
+function normalizeFeatures(raw: unknown): Feature[] {
+  if (!Array.isArray(raw)) return [...DEFAULT_FEATURES]
+  const known = new Set<string>(DEFAULT_FEATURES)
+  return raw.filter((f): f is Feature => typeof f === 'string' && known.has(f))
 }
 
 function validateCliArgs(argv: Record<string, any>, projectName?: string): void {

@@ -2,7 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import type { ProjectOptions } from './prompts'
 import { hasTemplateDir, getFeatureDeps } from './featureDeps'
-import { renderTemplate, renderEjsInPlace } from './utils/renderTemplate'
+import { renderTemplate } from './utils/renderTemplate'
 import { sortDependencies } from './utils/deepMerge'
 
 /**
@@ -46,13 +46,10 @@ export async function generate(options: ProjectOptions, targetDir: string): Prom
   // 4. Merge pure-dependency features into package.json
   mergeFeatureDeps(targetDir, options)
 
-  // 5. Process remaining EJS files in place (router mode, scaffold conditions, etc.)
-  await renderEjsInPlace(targetDir, options)
-
-  // 6. Remove empty directories (leftover from EJS conditions)
+  // 5. Remove empty directories (leftover from EJS conditions)
   removeEmptyDirs(targetDir)
 
-  // 7. Sort package.json dependencies
+  // 6. Sort package.json dependencies
   sortPackageJson(targetDir)
 }
 

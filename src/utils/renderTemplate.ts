@@ -60,7 +60,7 @@ export async function renderTemplate(
       const destName = file.startsWith('_') ? `.${file.slice(1)}` : file
       const destDir = path.join(targetDir, destName)
       fs.mkdirSync(destDir, { recursive: true })
-      await renderTemplate(srcPath, destDir, options)
+      await renderTemplate(srcPath, destDir, options, skipFiles)
     } else {
       await renderFile(srcPath, targetDir, file, options)
     }
@@ -111,47 +111,6 @@ async function renderFile(
  */
 function isBinaryTemplateFile(filePath: string): boolean {
   return BINARY_EXTENSIONS.has(path.extname(filePath).toLowerCase())
-}
-
-/**
- * Process all .ejs files in the generated directory (second pass)
- * Used for files that have already been copied but contain EJS conditions
- */
-export async function renderEjsInPlace(
-  targetDir: string,
-  options: ProjectOptions,
-): Promise<void> {
-  const files = getAllFiles(targetDir)
-
-  for (const filePath of files) {
-    if (filePath.endsWith('.ejs')) {
-      const template = fs.readFileSync(filePath, 'utf-8')
-      const content = ejs.render(template, { options })
-      const destPath = filePath.slice(0, -4) // Remove .ejs extension
-
-      if (content.trim()) {
-        fs.writeFileSync(destPath, content)
-      }
-      fs.unlinkSync(filePath) // Remove .ejs source
-    }
-  }
-}
-
-function getAllFiles(dir: string): string[] {
-  const results: string[] = []
-  const entries = fs.readdirSync(dir, { withFileTypes: true })
-
-  for (const entry of entries) {
-    const fullPath = path.join(dir, entry.name)
-    if (entry.isDirectory()) {
-      if (entry.name === 'node_modules' || entry.name === '.git') continue
-      results.push(...getAllFiles(fullPath))
-    } else {
-      results.push(fullPath)
-    }
-  }
-
-  return results
 }
 
 function shouldIgnoreTemplateEntry(entryName: string): boolean {

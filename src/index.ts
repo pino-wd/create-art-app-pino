@@ -8,7 +8,10 @@ import { postGenerate } from './postActions'
 
 async function main(): Promise<void> {
   const argv = minimist(process.argv.slice(2), {
-    boolean: ['default', 'history', 'hash', 'git', 'hooks'],
+    // 注意：git/hooks 不能放进 boolean 列表——minimist 会让未传入的 boolean 默认为 false，
+    // 导致 resolveScaffoldOption 把"未指定"误判为"显式关闭"，破坏脚手架默认开启行为。
+    // 参照 reference/vscode/agents：未声明时 --no-x 解析为 false、未传为 undefined、--x 为 true。
+    boolean: ['default', 'history', 'hash'],
     string: ['auth', 'package-manager'],
   })
 
@@ -26,7 +29,8 @@ async function main(): Promise<void> {
   const targetDir = path.join(cwd, options.projectName)
 
   // Check if target directory already exists
-  if (fs.existsSync(targetDir)) {
+  const targetDirExisted = fs.existsSync(targetDir)
+  if (targetDirExisted) {
     const entries = fs.readdirSync(targetDir)
     if (entries.length > 0) {
       logError(`目录 ${options.projectName} 已存在且不为空`)
@@ -41,8 +45,17 @@ async function main(): Promise<void> {
   console.log(`  正在创建项目 ${options.projectName} ...`)
   console.log()
 
-  await generate(options, targetDir)
-  await postGenerate(options, targetDir)
+  try {
+    await generate(options, targetDir)
+    await postGenerate(options, targetDir)
+  } catch (err) {
+    // 生成失败时清理半成品：仅当目标目录是本轮新建的才删除，
+    // 用户预先创建的空目录保持原状，避免误删用户已有内容。
+    if (!targetDirExisted) {
+      fs.rmSync(targetDir, { recursive: true, force: true })
+    }
+    throw err
+  }
 }
 
 main().catch((err) => {

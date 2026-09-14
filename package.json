@@ -20,7 +20,11 @@
     "dev": "tsup --watch",
     "build": "tsup",
     "start": "node dist/index.cjs",
+    "test:smoke": "pnpm build && node scripts/smoke.mjs",
     "prepublishOnly": "pnpm build"
+  },
+  "engines": {
+    "node": ">=18"
   },
   "keywords": [
     "cli",
