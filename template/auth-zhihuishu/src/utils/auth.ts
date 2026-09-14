@@ -1,4 +1,4 @@
-import type { AuthMode, CasCookieUser } from '@/types/auth'
+import type { AuthMode } from '@/types/auth'
 import {
   authStorageKeys,
   casCookieName,
@@ -20,29 +20,21 @@ function resolveAuthMode(): AuthMode {
 }
 
 /**
- * 获取当前运行时使用的认证模式
+ * 获取当前运行时使用的认证模式，供路由守卫和请求链路统一判断。
  */
 export function getAuthMode(): AuthMode {
   return resolveAuthMode()
 }
 
 /**
- * 判断当前是否启用了开发态手动 token 登录模式
+ * 判断当前是否启用了开发态手动 token 登录模式。
  */
 export function isDevTokenAuthMode(): boolean {
   return getAuthMode() === 'dev-token'
 }
 
 /**
- * 判断当前页面是否运行在智慧树域名下
- */
-export function isZhihuishuDomain(): boolean {
-  const hostname = window.location.hostname
-  return hostname === 'zhihuishu.com' || hostname.endsWith('.zhihuishu.com')
-}
-
-/**
- * 从 document.cookie 中读取指定 Cookie
+ * 从 document.cookie 中读取指定 Cookie，避免额外引入 Cookie 依赖。
  */
 function getCookieValue(name: string): string | null {
   const prefix = `${name}=`
@@ -55,48 +47,37 @@ function getCookieValue(name: string): string | null {
 }
 
 /**
- * 获取智慧树 CAS 登录 Cookie 的原始值
+ * 判断给定字符串是否为合法的 HTTP(S) URL，防止 XSS 注入。
  */
-export function getCASLOGC(): string | null {
-  return getCookieValue(casCookieName)
+function isSafeHttpUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url)
+    return parsed.protocol === 'https:' || parsed.protocol === 'http:'
+  }
+  catch {
+    return false
+  }
 }
 
 /**
- * 校验 CAS Cookie 中是否具备可用于业务换票的用户 ID
+ * 从 CASTGC Cookie 中安全解析用户头像 URL。
+ *
+ * 读取 CASTGC → decodeURIComponent → JSON.parse → 校验 headPic 为合法 HTTP(S) URL。
+ * Cookie 缺失、解码失败、JSON 非法、字段缺失或 URL 非法时均返回 null。
+ * 不记录、输出或持久化完整 Cookie 内容。
  */
-function hasValidUserId(value: Partial<CasCookieUser>): value is CasCookieUser {
-  const userId = value.userId
-
-  if (typeof userId === 'number') {
-    return Number.isFinite(userId)
-  }
-
-  if (typeof userId === 'string') {
-    return userId.trim().length > 0
-  }
-
-  return false
-}
-
-/**
- * 解析 CASLOGC，解析失败或缺少 userId 时统一返回 null
- */
-export function parseCASLOGC(): CasCookieUser | null {
-  const caslogcCookie = getCASLOGC()
-
-  if (!caslogcCookie) {
+export function resolveCastgcHeadPic(): string | null {
+  const rawCookie = getCookieValue(casTicketCookieName)
+  if (!rawCookie)
     return null
-  }
 
   try {
-    const decodedData = decodeURIComponent(caslogcCookie)
-    const parsed = JSON.parse(decodedData) as Partial<CasCookieUser>
-
-    if (!hasValidUserId(parsed)) {
+    const profile = JSON.parse(decodeURIComponent(rawCookie))
+    const headPic = profile.headPic
+    if (typeof headPic !== 'string' || !isSafeHttpUrl(headPic)) {
       return null
     }
-
-    return parsed
+    return headPic
   }
   catch {
     return null
@@ -104,19 +85,86 @@ export function parseCASLOGC(): CasCookieUser | null {
 }
 
 /**
- * 清理本地业务登录态
+ * 获取 jt-cas 登录 Cookie 的原始值。
+ */
+export function getJtCasToken(): string | null {
+  const token = getCookieValue(casCookieName)
+  if (token) {
+    return token
+  }
+
+  if (isDevTokenAuthMode()) {
+    const envToken = import.meta.env.VITE_DEV_TOKEN
+    if (envToken) {
+      return envToken
+    }
+  }
+
+  return null
+}
+
+/**
+ * 以当前站点为边界解析回跳地址，避免外部 origin 混入 CAS service。
+ */
+function createRedirectUrl(redirectPath?: string): URL {
+  const rawRedirectPath = redirectPath?.trim() || getCurrentRedirectPath()
+  return new URL(rawRedirectPath, window.location.origin)
+}
+
+/**
+ * 清理回跳路径里的 CAS 参数，避免旧 ticket 被继续带回 service。
+ */
+export function sanitizeRedirectPath(redirectPath?: string): string {
+  const urlObj = createRedirectUrl(redirectPath)
+  urlObj.searchParams.delete('ticket')
+  urlObj.searchParams.delete('service')
+  urlObj.searchParams.delete('source')
+  return `${urlObj.pathname}${urlObj.search}${urlObj.hash}`
+}
+
+/**
+ * 拼出当前页面路径，用于登录完成后回跳原页面。
+ */
+export function getCurrentRedirectPath(): string {
+  return `${window.location.pathname}${window.location.search}${window.location.hash}`
+}
+
+/**
+ * 判断当前 URL 是否携带 CAS ticket，决定是否启用短重试等待 Cookie 稳定。
+ */
+export function hasTicketInUrl(): boolean {
+  return createRedirectUrl(getCurrentRedirectPath()).searchParams.has('ticket')
+}
+
+/**
+ * 清理地址栏中的 CAS 参数，登录成功后避免刷新页面重复消费旧 ticket。
+ */
+export function clearCurrentCASParamsFromUrl(): void {
+  const currentRedirectPath = getCurrentRedirectPath()
+  const sanitizedRedirectPath = sanitizeRedirectPath(currentRedirectPath)
+
+  if (sanitizedRedirectPath === currentRedirectPath) {
+    return
+  }
+
+  window.history.replaceState(window.history.state, document.title, sanitizedRedirectPath)
+}
+
+/**
+ * 清理本地业务登录态，避免旧 token 继续污染真实接口请求。
  */
 export function clearAuthStorage(): void {
   localStorage.removeItem(authStorageKeys.token)
   localStorage.removeItem(authStorageKeys.userInfo)
   localStorage.removeItem(authStorageKeys.expiresAt)
   localStorage.removeItem(authStorageKeys.mode)
+  localStorage.removeItem(authStorageKeys.userPermissions)
 }
 
 /**
- * 通过过期写入方式清除当前域及二级域下的智慧树 CAS Cookie
+ * 通过过期写入方式清除当前域及二级域下的智慧树 CAS Cookie。
  */
-export function removeCASLOGC(): void {
+export function removeAuthCookies(): void {
   const hostname = window.location.hostname
   const expireCookie = (name: string, domain?: string): void => {
     const domainText = domain ? `; domain=${domain}` : ''
@@ -137,18 +185,17 @@ export function removeCASLOGC(): void {
 }
 
 /**
- * 跳转智慧树 CAS 登录页
+ * 跳转智慧树 CAS 登录页，并把目标页面作为 service 参数传入。
  */
 export function redirectToZhihuishuLogin(redirectPath?: string): void {
-  const targetUrl = redirectPath
-    ? `${window.location.origin}${redirectPath.startsWith('/') ? redirectPath : `/${redirectPath}`}`
-    : window.location.href
+  const sanitizedRedirectPath = sanitizeRedirectPath(redirectPath)
+  const targetUrl = `${window.location.origin}${sanitizedRedirectPath}`
 
   window.location.replace(`${zhihuishuCASLoginUrl}${encodeURIComponent(targetUrl)}`)
 }
 
 /**
- * 清理登录态后按认证模式处理退出
+ * 清理登录态后按认证模式处理退出；开发态无登录页，不做整页跳转。
  */
 export function loginOutRedirect(redirectPath?: string): void {
   clearAuthStorage()
@@ -157,6 +204,6 @@ export function loginOutRedirect(redirectPath?: string): void {
     return
   }
 
-  removeCASLOGC()
+  removeAuthCookies()
   redirectToZhihuishuLogin(redirectPath)
 }

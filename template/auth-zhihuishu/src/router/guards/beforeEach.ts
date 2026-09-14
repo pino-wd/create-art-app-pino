@@ -3,12 +3,20 @@ import NProgress from 'nprogress'
 import { MenuProcessor, RouteRegistry } from '@/router/core'
 import { useAuthStore } from '@/store/modules/auth'
 import { useMenuStore } from '@/store/modules/menu'
-import { isDevTokenAuthMode, isZhihuishuDomain } from '@/utils/auth'
+import { useUserStore } from '@/store/modules/user'
+import { isDevTokenAuthMode } from '@/utils/auth'
 import { setWorktab } from '@/utils/navigation'
 import { setPageTitle } from '@/utils/router'
 
+const FORBIDDEN_PAGE_PATH = '/403'
+
 /**
  * 设置路由前置守卫（智慧树 CAS + dev-token 双模式）
+ *
+ * 登录态准备一律走 authStore.autoLogin()：
+ * - 失败且换票已达上限时落到 403，避免后端故障时整页死循环；
+ * - 其余 CAS 失败场景交给 logout 触发一次整页登录跳转；
+ * - 登录成功后再同步头部用户信息，并初始化菜单与动态路由。
  */
 export function setupBeforeEachGuard(router: Router): void {
   router.beforeEach(async (to) => {
@@ -21,26 +29,21 @@ export function setupBeforeEachGuard(router: Router): void {
       return true
     }
 
-    // dev-token 模式
-    if (isDevTokenAuthMode()) {
-      const success = await authStore.autoLogin()
-      if (!success) {
-        return { path: '/403', replace: true }
-      }
-    }
-    else {
-      // CAS 模式：需要在智慧树域名下运行
-      if (!isZhihuishuDomain()) {
-        authStore.logout(to.fullPath)
-        return false
+    const success = await authStore.autoLogin()
+
+    if (!success) {
+      // 换票失败已达上限时不再跳转 CAS，直接落到错误页，避免后端故障时整页死循环。
+      if (authStore.authBootstrapState.lastErrorCode === 'exchange-failed-exhausted') {
+        return { path: FORBIDDEN_PAGE_PATH, replace: true }
       }
 
-      const success = await authStore.autoLogin()
-      if (!success) {
-        authStore.logout(to.fullPath)
-        return false
-      }
+      // 开发态仅清理本地登录态并落到 403；CAS 态触发一次整页登录跳转。
+      authStore.logout(to.fullPath)
+      return isDevTokenAuthMode() ? { path: FORBIDDEN_PAGE_PATH, replace: true } : false
     }
+
+    // 登录成功后同步业务登录态到顶部用户菜单
+    useUserStore().syncFromBusinessAuth()
 
     // 初始化菜单和动态路由
     const menuStore = useMenuStore()

@@ -3,3 +3,6 @@ VITE_DEV_TOKEN=
 
 # 本地开发用户 UID（对应后端 user_uid）
 VITE_DEV_USER_UID=
+
+# 本地开发系统角色码（可选，如 system_admin）
+VITE_DEV_SYSTEM_ROLE=

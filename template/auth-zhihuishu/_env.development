@@ -4,11 +4,14 @@ VITE_AUTH_MODE=dev-token
 # API 基础地址
 VITE_API_BASE_URL=http://localhost:3000
 
-# 本地开发 token（首次启动直接进入 Dashboard；生产请改为真实 token 或移至 .env.local）
-VITE_DEV_TOKEN=mock-dev-token-for-local-dev
+# 本地开发 token（占位符即可免登录进入 Dashboard；联调真实接口请替换为真实 token 或移至 .env.local）
+VITE_DEV_TOKEN=dev-local-placeholder-token
 
-# 本地开发用户 UID
+# 本地开发用户 UID（对应后端 user_uid）
 VITE_DEV_USER_UID=000000
+
+# 本地开发系统角色码（可选）：配置后 isSuperAdmin 按 superAdminRoleCode 约定派生，改后重启 dev server 生效
+VITE_DEV_SYSTEM_ROLE=
 
 # 路由权限模式（frontend：前端静态菜单，backend：后端接口动态获取）
 VITE_ACCESS_MODE=frontend

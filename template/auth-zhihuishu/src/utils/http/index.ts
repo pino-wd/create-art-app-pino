@@ -2,19 +2,27 @@ import type { AxiosRequestConfig } from 'axios'
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
 import { useAuthStore } from '@/store/modules/auth'
+import { getCurrentRedirectPath } from '@/utils/auth'
 
 const http = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || '',
   timeout: 30000,
 })
 
-// 请求拦截器：注入 token
+/**
+ * 判定登录失效：HTTP 401 或业务码 401 / 4010001。
+ */
+function isAuthFailure(status?: number, code?: number): boolean {
+  return status === 401 || code === 401 || code === 4010001
+}
+
+// 请求拦截器：注入 token（协议约定 Authorization 传裸 token，不加 Bearer 前缀）
 http.interceptors.request.use(
   (config) => {
     const authStore = useAuthStore()
     const token = authStore.getToken()
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`
+      config.headers.Authorization = token
     }
     return config
   },
@@ -27,9 +35,10 @@ http.interceptors.response.use(
     return response.data
   },
   (error) => {
-    if (error.response?.status === 401) {
+    if (isAuthFailure(error.response?.status, error.response?.data?.code)) {
       const authStore = useAuthStore()
-      authStore.expireSession()
+      // 保留当前路径作为登录回跳地址
+      authStore.expireSession(getCurrentRedirectPath())
       return Promise.reject(error)
     }
     const message = error.response?.data?.message || error.message || '请求失败'
