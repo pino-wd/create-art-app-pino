@@ -67,7 +67,6 @@ export async function getProjectOptions(argv: Record<string, any>): Promise<Proj
           choices: [
             { title: 'Markdown 渲染（md-editor-v3）', value: 'markdown', selected: true },
             { title: 'SSE 流式请求（@microsoft/fetch-event-source）', value: 'sse', selected: true },
-            { title: 'ECharts 图表', value: 'echarts', selected: true },
             { title: 'vue-draggable-plus 拖拽', value: 'draggable', selected: true },
             { title: 'dayjs 日期工具', value: 'dayjs', selected: true },
           ],
@@ -111,8 +110,8 @@ export async function getProjectOptions(argv: Record<string, any>): Promise<Proj
   const auth = normalizeAuth(argv.auth || result.auth || 'art')
   const routerMode = argv.hash ? 'hash' : (argv.history ? 'history' : (result.routerMode || 'history'))
   const features = defaultMode
-    ? ['markdown', 'sse', 'echarts', 'draggable', 'dayjs']
-    : (result.features || ['markdown', 'sse', 'echarts', 'draggable', 'dayjs'])
+    ? ['markdown', 'sse', 'draggable', 'dayjs']
+    : (result.features || ['markdown', 'sse', 'draggable', 'dayjs'])
   const scaffoldChoices: string[] = defaultMode
     ? ['reference', 'vscode', 'agentsMd', 'gitInit', 'commitChecks', 'docGovernance']
     : (result.scaffold || ['reference', 'vscode', 'agentsMd', 'gitInit', 'commitChecks', 'docGovernance'])

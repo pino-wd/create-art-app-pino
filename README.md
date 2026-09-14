@@ -70,9 +70,10 @@ pnpm create art-app-pino my-app --default --no-reference --no-vscode --no-hooks 
 | --- | --- | --- |
 | Markdown 渲染 | `md-editor-v3` | ✅ |
 | SSE 流式请求 | `@microsoft/fetch-event-source` | ✅ |
-| ECharts 图表 | `echarts` + `vue-echarts` | ✅ |
 | 拖拽 | `vue-draggable-plus` | ✅ |
 | 日期工具 | `dayjs` | ✅ |
+
+> ECharts 图表能力（依赖 + `src/plugins/echarts.ts` + 图表组件）已内置 base 模板，无需单独勾选。
 
 ### 工程化配置
 
@@ -208,8 +209,7 @@ create-art-app-pino/
 │   ├── auth-zhihuishu/          # 智慧树 CAS 叠加层
 │   ├── scaffold-doc-governance/ # 文档治理叠加层
 │   ├── feature-markdown/        # Markdown 功能模板
-│   ├── feature-sse/             # SSE 功能模板
-│   └── feature-echarts/         # ECharts 功能模板
+│   └── feature-sse/             # SSE 功能模板
 ├── package.json
 ├── tsconfig.json
 ├── tsup.config.ts

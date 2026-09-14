@@ -1,4 +1,4 @@
-export type Feature = 'markdown' | 'sse' | 'echarts' | 'draggable' | 'dayjs'
+export type Feature = 'markdown' | 'sse' | 'draggable' | 'dayjs'
 
 interface FeatureDepConfig {
   deps?: Record<string, string>
@@ -16,7 +16,7 @@ export const FEATURE_DEPS: Record<string, FeatureDepConfig> = {
 /**
  * Template-based features — have their own template directory
  */
-export const TEMPLATE_FEATURES: readonly string[] = ['markdown', 'sse', 'echarts']
+export const TEMPLATE_FEATURES: readonly string[] = ['markdown', 'sse']
 
 /**
  * Check if a feature has a template directory
