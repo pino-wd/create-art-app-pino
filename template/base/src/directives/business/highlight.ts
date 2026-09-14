@@ -41,7 +41,7 @@
  * @author Art Design Pro Team
  */
 
-import { App, Directive } from 'vue'
+import type { App, Directive } from 'vue'
 import hljs from 'highlight.js'
 
 export type HighlightDirective = Directive<HTMLElement>
@@ -66,11 +66,12 @@ function insertLineNumbers(block: HTMLElement) {
 function addCopyButton(block: HTMLElement) {
   const copyButton = document.createElement('i')
   copyButton.className = 'copy-button'
-  copyButton.innerHTML =
-    '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path fill="currentColor" d="M7 6V3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-3v3c0 .552-.45 1-1.007 1H4.007A1 1 0 0 1 3 21l.003-14c0-.552.45-1 1.006-1zM5.002 8L5 20h10V8zM9 6h8v10h2V4H9z"/></svg>'
+  copyButton.innerHTML
+    = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path fill="currentColor" d="M7 6V3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-3v3c0 .552-.45 1-1.007 1H4.007A1 1 0 0 1 3 21l.003-14c0-.552.45-1 1.006-1zM5.002 8L5 20h10V8zM9 6h8v10h2V4H9z"/></svg>'
   copyButton.onclick = () => {
     // 过滤掉行号，只复制代码内容
-    const codeContent = block.innerText.replace(/^\d+\s+/gm, '')
+    // 行号为 inline span、换行为 pre 内原始文本节点，textContent 拼接结果与 innerText 一致
+    const codeContent = block.textContent.replace(/^\d+\s+/gm, '')
     navigator.clipboard.writeText(codeContent).then(() => {
       ElMessage.success('复制成功')
     })
@@ -85,7 +86,8 @@ function addCopyButton(block: HTMLElement) {
       codeWrapper.className = 'code-wrapper'
       preElement.replaceChild(codeWrapper, block)
       codeWrapper.appendChild(block)
-    } else {
+    }
+    else {
       codeWrapper = block.parentElement
     }
     // 将复制按钮添加到 pre 元素（而非 codeWrapper 内），这样它不会随滚动条滚动
@@ -96,9 +98,9 @@ function addCopyButton(block: HTMLElement) {
 // 检查代码块是否已经被处理过
 function isBlockProcessed(block: HTMLElement): boolean {
   return (
-    block.hasAttribute('data-highlighted') ||
-    !!block.querySelector('.line-number') ||
-    !!block.parentElement?.querySelector('.copy-button')
+    block.hasAttribute('data-highlighted')
+    || !!block.querySelector('.line-number')
+    || !!block.parentElement?.querySelector('.copy-button')
   )
 }
 
@@ -118,7 +120,8 @@ function processBlock(block: HTMLElement) {
     insertLineNumbers(block)
     addCopyButton(block)
     markBlockAsProcessed(block)
-  } catch (error) {
+  }
+  catch (error) {
     console.warn('处理代码块时出错:', error)
   }
 }
@@ -126,7 +129,7 @@ function processBlock(block: HTMLElement) {
 // 查找并处理所有代码块
 function processAllCodeBlocks(el: HTMLElement) {
   const blocks = Array.from(el.querySelectorAll<HTMLElement>('pre code'))
-  const unprocessedBlocks = blocks.filter((block) => !isBlockProcessed(block))
+  const unprocessedBlocks = blocks.filter(block => !isBlockProcessed(block))
 
   if (unprocessedBlocks.length === 0) {
     return
@@ -134,8 +137,9 @@ function processAllCodeBlocks(el: HTMLElement) {
 
   if (unprocessedBlocks.length <= 10) {
     // 如果代码块数量少于等于10，直接处理所有代码块
-    unprocessedBlocks.forEach((block) => processBlock(block))
-  } else {
+    unprocessedBlocks.forEach(block => processBlock(block))
+  }
+  else {
     // 定义每次处理的代码块数
     const batchSize = 10
     let currentIndex = 0
@@ -169,7 +173,7 @@ function retryProcessing(el: HTMLElement, maxRetries: number = 3, delay: number 
 
     // 检查是否还有未处理的代码块
     const remainingBlocks = Array.from(el.querySelectorAll<HTMLElement>('pre code')).filter(
-      (block) => !isBlockProcessed(block)
+      block => !isBlockProcessed(block),
     )
 
     if (remainingBlocks.length > 0 && retryCount < maxRetries) {
@@ -221,7 +225,7 @@ const highlightDirective: HighlightDirective = {
     // 开始观察
     observer.observe(el, {
       childList: true,
-      subtree: true
+      subtree: true,
     })
 
     // 将 observer 存储到元素上，以便在 unmounted 时清理
@@ -242,7 +246,7 @@ const highlightDirective: HighlightDirective = {
       observer.disconnect()
       delete (el as any)._highlightObserver
     }
-  }
+  },
 }
 
 export function setupHighlightDirective(app: App) {

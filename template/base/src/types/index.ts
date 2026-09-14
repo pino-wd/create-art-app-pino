@@ -12,11 +12,11 @@ export * from './common'
 /** 组件相关类型定义 */
 export * from './component'
 
-/** 状态管理相关类型定义 */
-export * from './store'
+/** 配置相关类型定义 */
+export * from './config'
 
 /** 路由相关类型定义 */
 export * from './router'
 
-/** 配置相关类型定义 */
-export * from './config'
+/** 状态管理相关类型定义 */
+export * from './store'

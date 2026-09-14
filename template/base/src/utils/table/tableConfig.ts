@@ -50,6 +50,6 @@ export const tableConfig = {
     // 当前页码
     current: 'current',
     // 每页大小
-    size: 'size'
-  }
+    size: 'size',
+  },
 }

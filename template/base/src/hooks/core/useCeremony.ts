@@ -40,12 +40,12 @@
  * @author Art Design Pro Team
  */
 
-import { useTimeoutFn, useIntervalFn, useDateFormat } from '@vueuse/core'
+import { useDateFormat, useIntervalFn, useTimeoutFn } from '@vueuse/core'
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
+import { festivalConfigList } from '@/config/modules/festival'
 import { useSettingStore } from '@/store/modules/setting'
 import { mittBus } from '@/utils/sys'
-import { festivalConfigList } from '@/config/modules/festival'
 
 /**
  * 节日庆祝配置常量
@@ -58,7 +58,7 @@ const FESTIVAL_CONFIG = {
   /** 文本显示延迟（毫秒） */
   TEXT_DELAY: 2000,
   /** 默认烟花播放次数 */
-  DEFAULT_FIREWORKS_COUNT: 3
+  DEFAULT_FIREWORKS_COUNT: 3,
 } as const
 
 /**
@@ -80,7 +80,7 @@ export function useCeremony() {
   const isDateInRange = (
     currentDate: string,
     festivalDate: string,
-    festivalEndDate?: string
+    festivalEndDate?: string,
   ): boolean => {
     if (!festivalEndDate) {
       // 单日节日
@@ -100,7 +100,7 @@ export function useCeremony() {
    */
   const currentFestivalData = computed(() => {
     const currentDate = useDateFormat(new Date(), 'YYYY-MM-DD').value
-    return festivalConfigList.find((item) => isDateInRange(currentDate, item.date, item.endDate))
+    return festivalConfigList.find(item => isDateInRange(currentDate, item.date, item.endDate))
   })
 
   /**
@@ -179,6 +179,6 @@ export function useCeremony() {
     cleanup,
     holidayFireworksLoaded,
     currentFestivalData,
-    isShowFireworks
+    isShowFireworks,
   }
 }

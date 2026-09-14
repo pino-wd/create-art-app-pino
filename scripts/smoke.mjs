@@ -138,13 +138,13 @@ function assertCommonArtifacts(projectDir) {
 /** overlay 方向断言：art 与 zhihuishu 互斥产物 */
 function assertAuthOverlayDirection(combo, projectDir) {
   const authService = path.join(projectDir, 'src', 'services', 'authService.ts')
-  const loginPage = path.join(projectDir, 'src', 'views', 'auth', 'login', 'index.vue')
+  const loginPage = path.join(projectDir, 'src', 'pages', 'auth', 'login', 'index.vue')
 
   if (combo.auth === 'zhihuishu') {
     assert(fs.existsSync(authService), 'zhihuishu 认证应生成 src/services/authService.ts')
-    assert(!fs.existsSync(loginPage), 'zhihuishu 认证不应存在 Art 登录页 src/views/auth/login/index.vue')
+    assert(!fs.existsSync(loginPage), 'zhihuishu 认证不应存在 Art 登录页 src/pages/auth/login/index.vue')
   } else {
-    assert(fs.existsSync(loginPage), 'art 认证应生成登录页 src/views/auth/login/index.vue')
+    assert(fs.existsSync(loginPage), 'art 认证应生成登录页 src/pages/auth/login/index.vue')
     assert(!fs.existsSync(authService), 'art 认证不应存在 src/services/authService.ts')
   }
 }

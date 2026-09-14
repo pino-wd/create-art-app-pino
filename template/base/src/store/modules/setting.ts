@@ -1,3 +1,5 @@
+import type { ContainerWidthEnum, MenuThemeEnum, MenuTypeEnum } from '@/enums/appEnum'
+import type { MenuThemeType } from '@/types/store'
 /**
  * 系统设置状态管理模块
  *
@@ -31,14 +33,13 @@
  * @author Art Design Pro Team
  */
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
-import { MenuThemeType } from '@/types/store'
+import { computed, ref } from 'vue'
 import AppConfig from '@/config'
-import { SystemThemeEnum, MenuThemeEnum, MenuTypeEnum, ContainerWidthEnum } from '@/enums/appEnum'
-import { setElementThemeColor } from '@/utils/ui'
+import { SETTING_DEFAULT_CONFIG } from '@/config/setting'
+import { SystemThemeEnum } from '@/enums/appEnum'
 import { useCeremony } from '@/hooks/core/useCeremony'
 import { StorageConfig } from '@/utils'
-import { SETTING_DEFAULT_CONFIG } from '@/config/setting'
+import { setElementThemeColor } from '@/utils/ui'
 
 /**
  * 系统设置状态管理
@@ -118,19 +119,6 @@ export const useSettingStore = defineStore(
     const festivalDate = ref('')
 
     /**
-     * 获取菜单主题
-     * 根据当前主题类型和暗色模式返回对应的主题配置
-     */
-    const getMenuTheme = computed((): MenuThemeType => {
-      const list = AppConfig.themeList.filter((item) => item.theme === menuThemeType.value)
-      if (isDark.value) {
-        return AppConfig.darkMenuStyles[0]
-      } else {
-        return list[0]
-      }
-    })
-
-    /**
      * 判断是否为暗色模式
      */
     const isDark = computed((): boolean => {
@@ -138,17 +126,31 @@ export const useSettingStore = defineStore(
     })
 
     /**
+     * 获取菜单主题
+     * 根据当前主题类型和暗色模式返回对应的主题配置
+     */
+    const getMenuTheme = computed((): MenuThemeType => {
+      const list = AppConfig.themeList.filter(item => item.theme === menuThemeType.value)
+      if (isDark.value) {
+        return AppConfig.darkMenuStyles[0]
+      }
+      else {
+        return list[0]
+      }
+    })
+
+    /**
      * 获取菜单展开宽度
      */
     const getMenuOpenWidth = computed((): string => {
-      return menuOpenWidth.value + 'px' || SETTING_DEFAULT_CONFIG.menuOpenWidth + 'px'
+      return `${menuOpenWidth.value}px` || `${SETTING_DEFAULT_CONFIG.menuOpenWidth}px`
     })
 
     /**
      * 获取自定义圆角
      */
     const getCustomRadius = computed((): string => {
-      return customRadius.value + 'rem' || SETTING_DEFAULT_CONFIG.customRadius + 'rem'
+      return `${customRadius.value}rem` || `${SETTING_DEFAULT_CONFIG.customRadius}rem`
     })
 
     /**
@@ -156,7 +158,7 @@ export const useSettingStore = defineStore(
      * 根据当前日期和节日日期判断是否显示烟花效果
      */
     const isShowFireworks = computed((): boolean => {
-      return festivalDate.value === useCeremony().currentFestivalData.value?.date ? false : true
+      return festivalDate.value !== useCeremony().currentFestivalData.value?.date
     })
 
     /**
@@ -438,13 +440,13 @@ export const useSettingStore = defineStore(
       setholidayFireworksLoaded,
       setShowFestivalText,
       setFestivalDate,
-      setDualMenuShowText
+      setDualMenuShowText,
     }
   },
   {
     persist: {
       key: 'setting',
-      storage: localStorage
-    }
-  }
+      storage: localStorage,
+    },
+  },
 )

@@ -8,34 +8,34 @@
  * @author Art Design Pro Team
  */
 
-// ECharts 按需导入配置
-import * as echarts from 'echarts/core'
-
 // 导入图表类型
 import {
   BarChart,
+  CandlestickChart,
   LineChart,
-  PieChart,
-  ScatterChart,
-  RadarChart,
   MapChart,
-  CandlestickChart
+  PieChart,
+  RadarChart,
+  ScatterChart,
 } from 'echarts/charts'
 
 // 导入组件
 import {
-  TitleComponent,
-  TooltipComponent,
+  BrushComponent,
+  DataZoomComponent,
+  GeoComponent,
   GridComponent,
   LegendComponent,
-  DataZoomComponent,
-  MarkPointComponent,
   MarkLineComponent,
+  MarkPointComponent,
+  TitleComponent,
   ToolboxComponent,
-  BrushComponent,
-  GeoComponent,
-  VisualMapComponent
+  TooltipComponent,
+  VisualMapComponent,
 } from 'echarts/components'
+
+// ECharts 按需导入配置
+import * as echarts from 'echarts/core'
 
 // 导入渲染器
 import { CanvasRenderer } from 'echarts/renderers'
@@ -65,12 +65,12 @@ echarts.use([
   VisualMapComponent,
 
   // 渲染器
-  CanvasRenderer
+  CanvasRenderer,
 ])
 
 // 导出 echarts 实例和类型
 export { echarts }
-export type { EChartsOption, BarSeriesOption } from 'echarts'
+export type { BarSeriesOption, EChartsOption } from 'echarts'
 
 // 导出常用的图形工具
 export const graphic = echarts.graphic

@@ -23,8 +23,8 @@ export const upgradeLogList = ref<UpgradeLog[]>([
       '修复：隐藏子菜单时父级菜单被一并隐藏的问题',
       '修复：静态路由刷新后跳回首页的问题',
       '修复：art-table 属性继承异常问题',
-      '修复：PC 端切换到移动端后再切回 PC 端，菜单无法恢复原桌面布局的问题'
-    ]
+      '修复：PC 端切换到移动端后再切回 PC 端，菜单无法恢复原桌面布局的问题',
+    ],
   },
   {
     version: 'v3.0.1',
@@ -47,8 +47,8 @@ export const upgradeLogList = ref<UpgradeLog[]>([
       '新增：双列菜单新增折叠按钮',
       '新增：菜单图标完善',
       '新增：多标签页增加图标',
-      '新增：WebSocket 连接'
-    ]
+      '新增：WebSocket 连接',
+    ],
   },
   {
     version: 'v3.0.0',
@@ -72,10 +72,10 @@ export const upgradeLogList = ref<UpgradeLog[]>([
       '响应式优化：优化 ArtForm、ArtSearchBar 栅格布局，适配多种屏幕尺寸',
       '节日功能增强：礼花配置支持跨日期范围设置与自定义播放次数',
       '依赖更新：升级核心依赖至最新稳定版本',
-      '配置管理优化：新增 setting.ts 配置文件，支持一键复制与重置系统默认设置'
+      '配置管理优化：新增 setting.ts 配置文件，支持一键复制与重置系统默认设置',
     ],
     remark:
-      '重要提示：本次升级涉及样式系统（Sass → Tailwind CSS）与图标库（Iconfont → Iconify）的底层重构，属于破坏性更新。建议新项目直接使用 v3.0，旧版本项目不建议升级。'
+      '重要提示：本次升级涉及样式系统（Sass → Tailwind CSS）与图标库（Iconfont → Iconify）的底层重构，属于破坏性更新。建议新项目直接使用 v3.0，旧版本项目不建议升级。',
   },
   {
     version: 'v2.6.1',
@@ -88,8 +88,8 @@ export const upgradeLogList = ref<UpgradeLog[]>([
       '修复 ElSlect 无法通过键盘选择问题',
       '修复带参数静态路由跳转登录页面问题',
       '优化外部链接菜单点击选中状态',
-      '授权页增加主题色切换功能'
-    ]
+      '授权页增加主题色切换功能',
+    ],
   },
   {
     version: 'v2.6.0',
@@ -108,9 +108,9 @@ export const upgradeLogList = ref<UpgradeLog[]>([
       '修复静态路由自定义首页路径首次访问跳转登录页问题',
       '修复退出登录时短暂跳转至 500 页的问题',
       '修复 v2.5.9 版本首页路由跳转配置失效问题',
-      '修复 v2.5.9 自动导包机制导致的构建异常'
+      '修复 v2.5.9 自动导包机制导致的构建异常',
     ],
-    requireReLogin: true
+    requireReLogin: true,
   },
   {
     version: 'v2.5.9',
@@ -120,8 +120,8 @@ export const upgradeLogList = ref<UpgradeLog[]>([
       'views 文件目录、文件名、代码优化',
       'useTable 分页请求字段增加全局配置 tableConfig.ts',
       '优化路由配置为模块化结构',
-      '获取菜单接口使用 apifox mock 数据（需在 .env 中 将 VITE_ACCESS_MODE 设为 backend 模式）'
-    ]
+      '获取菜单接口使用 apifox mock 数据（需在 .env 中 将 VITE_ACCESS_MODE 设为 backend 模式）',
+    ],
   },
   {
     version: 'v2.5.8',
@@ -136,9 +136,9 @@ export const upgradeLogList = ref<UpgradeLog[]>([
       '优化顶部进度条颜色',
       '优化自定义主题配置',
       '优化 ElementPlus 自定义主题问题',
-      '修复根路径 / 与 HOME_PAGE_PATH 同为 / 时出现的无限重定向'
+      '修复根路径 / 与 HOME_PAGE_PATH 同为 / 时出现的无限重定向',
     ],
-    remark: '由于项目依赖升级，node 版本需要升级到 v20.19.0 或以上'
+    remark: '由于项目依赖升级，node 版本需要升级到 v20.19.0 或以上',
   },
   {
     version: 'v2.5.7',
@@ -148,8 +148,8 @@ export const upgradeLogList = ref<UpgradeLog[]>([
       '新增 ArtForm 组件',
       '修复新版本谷歌浏览器切换主题闪烁问题',
       '优化表单 label 高度没有对齐问题',
-      '首屏启动性能优化'
-    ]
+      '首屏启动性能优化',
+    ],
   },
   {
     version: 'v2.5.6',
@@ -182,8 +182,8 @@ export const upgradeLogList = ref<UpgradeLog[]>([
       '修复动态路由参数导致的问题',
       '修复动态路由配置 一级路由是 iframe 页面时，全屏问题',
       '新增权限演示示例',
-      '全局组件采用异步加载策略，提升首屏加载性能'
-    ]
+      '全局组件采用异步加载策略，提升首屏加载性能',
+    ],
   },
   {
     version: 'v2.5.5',
@@ -209,8 +209,8 @@ export const upgradeLogList = ref<UpgradeLog[]>([
       '优化网络请求退出登录多次提示问题',
       'useTable 属性、方法命名优化',
       '登录页UI升级',
-      '403、404、500 页面UI升级'
-    ]
+      '403、404、500 页面UI升级',
+    ],
   },
   {
     version: 'v2.5.4',
@@ -224,8 +224,8 @@ export const upgradeLogList = ref<UpgradeLog[]>([
       '路由注册新增 component 校验',
       '修复地图滚轮滚动放大问题',
       '网络请求 headers 支持自定义配置',
-      '展开行支持 formatter 渲染'
-    ]
+      '展开行支持 formatter 渲染',
+    ],
   },
   {
     version: 'v2.5.3',
@@ -243,8 +243,8 @@ export const upgradeLogList = ref<UpgradeLog[]>([
       '新增表格左右布局示例',
       '搜索组件、分页组件高度降低',
       '优化登录页面滑块动画间隔时长',
-      '优化菜单没有子菜单显示的问题'
-    ]
+      '优化菜单没有子菜单显示的问题',
+    ],
   },
   {
     version: 'v2.5.2',
@@ -266,8 +266,8 @@ export const upgradeLogList = ref<UpgradeLog[]>([
       '支持自定义首页路径',
       '优化移动端设置中容器宽度样式',
       '优化登录页验证滑块文字居中效果',
-      '路由支持配置 redirect 等属性'
-    ]
+      '路由支持配置 redirect 等属性',
+    ],
   },
   {
     version: 'v2.5.1',
@@ -277,8 +277,8 @@ export const upgradeLogList = ref<UpgradeLog[]>([
       '修复首次登录系统时 loading 提前关闭bug',
       'el-card、el-table 背景色跟系统保持一致',
       '修复 v2.5.0 版本引起的全屏页样式层级过低bug',
-      '修复 v2.5.0 版本引起的表格展开行折叠bug'
-    ]
+      '修复 v2.5.0 版本引起的表格展开行折叠bug',
+    ],
   },
   {
     version: 'v2.5.0',
@@ -291,8 +291,8 @@ export const upgradeLogList = ref<UpgradeLog[]>([
       '修复菜单管理搜索直接修改 pinia 数据的问题',
       '移除 CountTo 插件，替换为 ArtCountTo 组件',
       'Echarts 版本升级到 5.6.0',
-      '修复路由守卫 loading 闪烁问题'
-    ]
+      '修复路由守卫 loading 闪烁问题',
+    ],
   },
   {
     version: 'v2.4.2.9',
@@ -307,13 +307,13 @@ export const upgradeLogList = ref<UpgradeLog[]>([
       'asyncRoutes 路由配置 auth_mark 字段改为 authMark',
       '去除重复的 components.d.ts 文件，components.d.ts、auto-imports.d.ts 忽略提交',
       '优化国际化语言文件加载方式，异步改成同步模式',
-      '优化 el-pagination 大小不一致问题'
-    ]
+      '优化 el-pagination 大小不一致问题',
+    ],
   },
   {
     version: 'v2.4.2.8',
     title: '修复 v2.4.2.7 版本访问 / 路径时显示 404 的问题',
-    date: '2025-06-26'
+    date: '2025-06-26',
   },
   {
     version: 'v2.4.2.7',
@@ -329,8 +329,8 @@ export const upgradeLogList = ref<UpgradeLog[]>([
       '优化锁屏页面被 el-loading 穿透bug',
       '跨域请求携带 cookie 配置从环境变量中获取，默认关闭',
       '针对SEO、可访问性做一些优化',
-      '新增标签页操作示例'
-    ]
+      '新增标签页操作示例',
+    ],
   },
   {
     version: 'v2.4.2.6',
@@ -341,8 +341,8 @@ export const upgradeLogList = ref<UpgradeLog[]>([
       '重构 ArtBreadcrumb 面包屑导航组件，优化逻辑结构与样式',
       '优化 ArtChatWindow 与 ArtFastEnter 组件代码，提升可读性与性能',
       '重构 ArtFireworksEffect 烟花效果组件，显著提升渲染性能与动画流畅度',
-      'README 文档新增官方网站链接，便于用户查看项目文档'
-    ]
+      'README 文档新增官方网站链接，便于用户查看项目文档',
+    ],
   },
   {
     version: 'v2.4.2.5',
@@ -350,8 +350,8 @@ export const upgradeLogList = ref<UpgradeLog[]>([
     date: '2025-06-22',
     detail: [
       '重构图表组件，优化代码结构与可维护性',
-      '精细调整图表动画与主题配色方案，提升视觉一致性'
-    ]
+      '精细调整图表动画与主题配色方案，提升视觉一致性',
+    ],
   },
   {
     version: 'v2.4.2.4',
@@ -360,8 +360,8 @@ export const upgradeLogList = ref<UpgradeLog[]>([
     detail: [
       'ArtMenuRight 组件重构',
       'ArtWatermark 增加类型注释',
-      'components/core/cards 下面的组件重构，代码优化'
-    ]
+      'components/core/cards 下面的组件重构，代码优化',
+    ],
   },
   {
     version: 'v2.4.2.3',
@@ -372,20 +372,20 @@ export const upgradeLogList = ref<UpgradeLog[]>([
       'ArtTextScroll 组件代码优化',
       'ArtException 组件增加类型提示',
       'ArtCutterImg 组件样式优化、增加类型定义',
-      'ArtVideoPlayer 组件增加类型定义'
-    ]
+      'ArtVideoPlayer 组件增加类型定义',
+    ],
   },
   {
     version: 'v2.4.2.2',
     title: '组件重构',
     date: '2025-06-16',
-    detail: ['返回顶部组件重构', '图标选择器组件重构', '系统Logo组件属性变更']
+    detail: ['返回顶部组件重构', '图标选择器组件重构', '系统Logo组件属性变更'],
   },
   {
     version: 'v2.4.2.1',
     title: '横幅组件重构、Bug修复',
     date: '2025-06-16',
-    detail: ['横幅组件重构以及优化', '修复混合菜单下第一个菜单是嵌套菜单跳转bug']
+    detail: ['横幅组件重构以及优化', '修复混合菜单下第一个菜单是嵌套菜单跳转bug'],
   },
   {
     version: 'v2.4.2',
@@ -400,9 +400,9 @@ export const upgradeLogList = ref<UpgradeLog[]>([
       '修复表格固定列不起作用bug',
       '路由配置新增 activePath 激活菜单路径属性',
       '去除用户列表、菜单管理页面无效代码',
-      '更新技术支持链接'
+      '更新技术支持链接',
     ],
-    requireReLogin: true
+    requireReLogin: true,
   },
   {
     version: 'v2.4.1.1',
@@ -413,8 +413,8 @@ export const upgradeLogList = ref<UpgradeLog[]>([
       '优化角色管理页面代码',
       '修复表格数据为空高度无限变大bug',
       'el-dialog视觉效果优化，支持配置线条',
-      '系统主题模式从Light改成跟随系统模式'
-    ]
+      '系统主题模式从Light改成跟随系统模式',
+    ],
   },
   {
     version: 'v2.4.1',
@@ -425,8 +425,8 @@ export const upgradeLogList = ref<UpgradeLog[]>([
       '页面入场动画时间减少0.04s',
       '修复 Echarts 图表组件在弹窗中不显示的 bug',
       'Echarts 图表性能优化，新增可视区域初始化、内存泄漏防护、防抖处理',
-      '锁屏状下禁止使用开发者工具破解锁屏'
-    ]
+      '锁屏状下禁止使用开发者工具破解锁屏',
+    ],
   },
   {
     version: 'v2.4.0',
@@ -442,8 +442,8 @@ export const upgradeLogList = ref<UpgradeLog[]>([
       '异常页面多语言支持, 提升国际化体验',
       '图片资源统一转换为 webp 格式，整体资源体积减少约 50%',
       '打包产物减少约 1MB，提高加载效率',
-      'HTTP 请求增加 token 过期自动处理逻辑，提升安全性与用户体验'
+      'HTTP 请求增加 token 过期自动处理逻辑，提升安全性与用户体验',
     ],
-    requireReLogin: true
-  }
+    requireReLogin: true,
+  },
 ])

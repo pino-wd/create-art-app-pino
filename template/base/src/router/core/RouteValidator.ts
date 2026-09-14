@@ -39,18 +39,19 @@ export class RouteValidator {
     return {
       valid: errors.length === 0,
       errors,
-      warnings
+      warnings,
     }
   }
 
   /**
    * 检测重复路由
+   * _errors 参数保留以保持与校验结果结构的一致性，当前仅产出 warnings
    */
   private checkDuplicates(
     routes: AppRouteRecord[],
-    errors: string[],
+    _errors: string[],
     warnings: string[],
-    parentPath = ''
+    parentPath = '',
   ): void {
     const routeNameMap = new Map<string, string>()
     const componentPathMap = new Map<string, string>()
@@ -65,7 +66,8 @@ export class RouteValidator {
           const routeName = String(route.name)
           if (routeNameMap.has(routeName)) {
             warnings.push(`路由名称重复: "${routeName}" (${fullPath})`)
-          } else {
+          }
+          else {
             routeNameMap.set(routeName, fullPath)
           }
         }
@@ -77,7 +79,8 @@ export class RouteValidator {
             const componentKey = `${parentPath}:${componentPath}`
             if (componentPathMap.has(componentKey)) {
               warnings.push(`组件路径重复: "${componentPath}" (${fullPath})`)
-            } else {
+            }
+            else {
               componentPathMap.set(componentKey, fullPath)
             }
           }
@@ -100,7 +103,7 @@ export class RouteValidator {
     routes: AppRouteRecord[],
     errors: string[],
     warnings: string[],
-    parentPath = ''
+    parentPath = '',
   ): void {
     routes.forEach((route) => {
       const hasExternalLink = !!route.meta?.link?.trim()
@@ -163,18 +166,19 @@ export class RouteValidator {
     const routeKey = `${routeName}_${route.path}`
 
     // 避免重复提示
-    if (this.warnedRoutes.has(routeKey)) return
+    if (this.warnedRoutes.has(routeKey))
+      return
     this.warnedRoutes.add(routeKey)
 
     const menuTitle = route.meta?.title || routeName
     const routePath = route.path || '/'
 
     console.error(
-      `[路由配置错误] 菜单 "${menuTitle}" (name: ${routeName}, path: ${routePath}) 配置错误\n` +
-        `  问题: ${level}级菜单不能使用 ${RoutesAlias.Layout} 作为 component\n` +
-        `  说明: 只有一级菜单才能使用 ${RoutesAlias.Layout}，二级及以下菜单应该指向具体的组件路径\n` +
-        `  当前配置: component: '${RoutesAlias.Layout}'\n` +
-        `  应该改为: component: '/your/component/path' 或留空 ''（如果是目录菜单）`
+      `[路由配置错误] 菜单 "${menuTitle}" (name: ${routeName}, path: ${routePath}) 配置错误\n`
+      + `  问题: ${level}级菜单不能使用 ${RoutesAlias.Layout} 作为 component\n`
+      + `  说明: 只有一级菜单才能使用 ${RoutesAlias.Layout}，二级及以下菜单应该指向具体的组件路径\n`
+      + `  当前配置: component: '${RoutesAlias.Layout}'\n`
+      + `  应该改为: component: '/your/component/path' 或留空 ''（如果是目录菜单）`,
     )
   }
 

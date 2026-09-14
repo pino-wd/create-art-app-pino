@@ -1,11 +1,11 @@
 import type { Router } from 'vue-router'
 import NProgress from 'nprogress'
 import { fetchGetUserInfo } from '@/api/auth'
-import { useUserStore } from '@/store/modules/user'
+import { MenuProcessor, RouteRegistry } from '@/router/core'
 import { useMenuStore } from '@/store/modules/menu'
+import { useUserStore } from '@/store/modules/user'
 import { setWorktab } from '@/utils/navigation'
 import { setPageTitle } from '@/utils/router'
-import { MenuProcessor, RouteRegistry } from '@/router/core'
 
 // 是否已获取过用户信息
 let hasLoadedUserInfo = false
@@ -75,7 +75,8 @@ export function setupBeforeEachGuard(router: Router): void {
         // 注册动态路由后，进行重定向跳转以使新路由生效
         next({ ...to, replace: true })
         return
-      } catch (error) {
+      }
+      catch (error) {
         console.error('[Router] 初始化菜单或路由失败:', error)
       }
     }

@@ -16,7 +16,8 @@ if (!fs.existsSync(path.resolve('docs'))) {
 
 try {
   execFileSync('lychee', ['--no-progress', 'docs/'], { stdio: 'inherit' })
-} catch (error) {
+}
+catch (error) {
   if (isMissingBinary(error)) {
     console.log('⚠️  lychee is not installed. Skipping link check.')
     console.log('   Install: brew install lychee (macOS) or cargo install lychee')
@@ -26,6 +27,6 @@ try {
   process.exit(1)
 }
 
-function isMissingBinary(error: unknown): boolean {
+function isMissingBinary(error) {
   return error instanceof Error && 'code' in error && error.code === 'ENOENT'
 }

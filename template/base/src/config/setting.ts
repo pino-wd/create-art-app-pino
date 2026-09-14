@@ -21,7 +21,7 @@
  */
 
 import AppConfig from '@/config'
-import { SystemThemeEnum, MenuThemeEnum, MenuTypeEnum, ContainerWidthEnum } from '@/enums/appEnum'
+import { ContainerWidthEnum, MenuThemeEnum, MenuTypeEnum, SystemThemeEnum } from '@/enums/appEnum'
 
 /**
  * 系统设置默认值配置
@@ -84,7 +84,7 @@ export const SETTING_DEFAULT_CONFIG = {
   /** 容器宽度 */
   containerWidth: ContainerWidthEnum.FULL,
   /** 节日日期 */
-  festivalDate: ''
+  festivalDate: '',
 }
 
 /**

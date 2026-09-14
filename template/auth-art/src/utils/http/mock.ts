@@ -18,10 +18,10 @@ const mockRoutes: MockRoute[] = [
       const password = body?.password
 
       const isValid = (
-        (username === 'super' && password === '123456') ||
-        (username === 'admin' && password === '123456') ||
-        (username === 'user' && password === '123456') ||
-        (username === 'admin' && password === 'admin')
+        (username === 'super' && password === '123456')
+        || (username === 'admin' && password === '123456')
+        || (username === 'user' && password === '123456')
+        || (username === 'admin' && password === 'admin')
       )
 
       if (isValid) {
@@ -56,7 +56,7 @@ const mockRoutes: MockRoute[] = [
           name: 'Dashboard',
           component: '/dashboard/console/index',
           meta: { title: '仪表盘', icon: 'ep:home-filled' },
-        }
+        },
       ],
     }),
   },

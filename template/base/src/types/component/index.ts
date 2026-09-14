@@ -22,22 +22,22 @@
  */
 
 // 搜索组件类型
-export type SearchComponentType =
-  | 'input'
-  | 'select'
-  | 'radio'
-  | 'checkbox'
-  | 'date'
-  | 'datetime'
-  | 'daterange'
-  | 'datetimerange'
-  | 'month'
-  | 'monthrange'
-  | 'year'
-  | 'yearrange'
-  | 'week'
-  | 'time'
-  | 'timerange'
+export type SearchComponentType
+  = | 'input'
+    | 'select'
+    | 'radio'
+    | 'checkbox'
+    | 'date'
+    | 'datetime'
+    | 'daterange'
+    | 'datetimerange'
+    | 'month'
+    | 'monthrange'
+    | 'year'
+    | 'yearrange'
+    | 'week'
+    | 'time'
+    | 'timerange'
 
 // 搜索框值变化参数
 export interface SearchChangeParams {

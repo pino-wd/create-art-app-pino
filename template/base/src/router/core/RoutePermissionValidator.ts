@@ -49,7 +49,7 @@ export class RoutePermissionValidator {
    */
   static buildMenuPathSet(
     menuList: AppRouteRecord[],
-    pathSet: Set<string> = new Set()
+    pathSet: Set<string> = new Set(),
   ): Set<string> {
     if (!Array.isArray(menuList) || menuList.length === 0) {
       return pathSet
@@ -106,9 +106,9 @@ export class RoutePermissionValidator {
       const routePath = route.path.startsWith('/') ? route.path : `/${route.path}`
 
       if (
-        routePath === targetPath ||
-        this.isDynamicRouteMatch(targetPath, routePath) ||
-        targetPath.startsWith(`${routePath}/`)
+        routePath === targetPath
+        || this.isDynamicRouteMatch(targetPath, routePath)
+        || targetPath.startsWith(`${routePath}/`)
       ) {
         return true
       }
@@ -148,8 +148,8 @@ export class RoutePermissionValidator {
   static validatePath(
     targetPath: string,
     menuList: AppRouteRecord[],
-    homePath: string = '/'
-  ): { path: string; hasPermission: boolean } {
+    homePath: string = '/',
+  ): { path: string, hasPermission: boolean } {
     const hasPermission = this.hasPermission(targetPath, menuList)
 
     if (hasPermission) {

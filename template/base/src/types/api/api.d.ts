@@ -109,8 +109,8 @@ declare namespace Api {
 
     /** 用户搜索参数 */
     type UserSearchParams = Partial<
-      Pick<UserListItem, 'id' | 'userName' | 'userGender' | 'userPhone' | 'userEmail' | 'status'> &
-        Api.Common.CommonSearchParams
+      Pick<UserListItem, 'id' | 'userName' | 'userGender' | 'userPhone' | 'userEmail' | 'status'>
+      & Api.Common.CommonSearchParams
     >
 
     /** 角色列表 */
@@ -128,11 +128,11 @@ declare namespace Api {
 
     /** 角色搜索参数 */
     type RoleSearchParams = Partial<
-      Pick<RoleListItem, 'roleId' | 'roleName' | 'roleCode' | 'description' | 'enabled'> &
-        Api.Common.CommonSearchParams & {
-          startTime: string | null
-          endTime: string | null
-        }
+      Pick<RoleListItem, 'roleId' | 'roleName' | 'roleCode' | 'description' | 'enabled'>
+      & Api.Common.CommonSearchParams & {
+        startTime: string | null
+        endTime: string | null
+      }
     >
   }
 }

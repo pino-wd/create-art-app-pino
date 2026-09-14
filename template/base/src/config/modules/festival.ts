@@ -23,7 +23,7 @@
  * @author Art Design Pro Team
  */
 
-import { FestivalConfig } from '@/types/config'
+import type { FestivalConfig } from '@/types/config'
 
 // 导入烟花图片（根据需要取消注释）
 // import sd from '@imgs/ceremony/sd.png'

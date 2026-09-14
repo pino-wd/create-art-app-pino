@@ -44,8 +44,8 @@
  * @author Art Design Pro Team
  */
 
+import type { App, Directive, DirectiveBinding } from 'vue'
 import { useUserStore } from '@/store/modules/user'
-import { App, Directive, DirectiveBinding } from 'vue'
 
 export type RolesDirective = Directive<HTMLElement, string | string[]>
 
@@ -79,7 +79,7 @@ function removeElement(el: HTMLElement): void {
 
 const rolesDirective: RolesDirective = {
   mounted: checkRolePermission,
-  updated: checkRolePermission
+  updated: checkRolePermission,
 }
 
 export function setupRolesDirective(app: App): void {

@@ -6,6 +6,6 @@
  */
 
 export * from './colors'
+export * from './emojo'
 export * from './loading'
 export * from './tabs'
-export * from './emojo'

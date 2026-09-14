@@ -81,9 +81,9 @@ export const vRipple: RippleDirective = {
 
       // 判断是否为有色按钮（Element Plus 按钮类型）
       const buttonTypes = ['primary', 'info', 'warning', 'danger', 'success'].map(
-        (type) => `el-button--${type}`
+        type => `el-button--${type}`,
       )
-      const isColoredButton = buttonTypes.some((type) => el.classList.contains(type))
+      const isColoredButton = buttonTypes.some(type => el.classList.contains(type))
       const defaultColor = isColoredButton
         ? 'rgba(255, 255, 255, 0.25)' // 有色按钮使用白色水波纹
         : 'var(--el-color-primary-light-7)' // 默认按钮使用主题色水波纹
@@ -108,7 +108,7 @@ export const vRipple: RippleDirective = {
         ripple.remove()
       }, animationDuration + 500) // 增加500ms缓冲时间
     })
-  }
+  },
 }
 
 export function setupRippleDirective(app: App) {

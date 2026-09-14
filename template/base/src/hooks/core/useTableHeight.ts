@@ -15,7 +15,8 @@
  * @author Art Design Pro Team
  */
 
-import { computed, type Ref } from 'vue'
+import type { Ref } from 'vue'
+import { computed } from 'vue'
 
 /**
  * 表格高度计算器配置接口
@@ -47,7 +48,7 @@ class TableHeightCalculator {
   calculate(): { height: string } {
     const offset = this.calculateOffset()
     return {
-      height: offset === 0 ? '100%' : `calc(100% - ${offset}px)`
+      height: offset === 0 ? '100%' : `calc(100% - ${offset}px)`,
     }
   }
 
@@ -100,6 +101,6 @@ export function useTableHeight(options: TableHeightOptions) {
 
   return {
     /** 容器高度样式对象 */
-    containerHeight
+    containerHeight,
   }
 }

@@ -33,8 +33,8 @@ export const globalComponentsConfig: GlobalComponentConfig[] = []
  * 获取启用的全局组件
  * @returns 已启用的组件配置列表
  */
-export const getEnabledGlobalComponents = () => {
-  return globalComponentsConfig.filter((config) => config.enabled !== false)
+export function getEnabledGlobalComponents() {
+  return globalComponentsConfig.filter(config => config.enabled !== false)
 }
 
 /**
@@ -42,6 +42,6 @@ export const getEnabledGlobalComponents = () => {
  * @param key 组件标识
  * @returns 组件配置对象
  */
-export const getGlobalComponentByKey = (key: string) => {
-  return globalComponentsConfig.find((config) => config.key === key)
+export function getGlobalComponentByKey(key: string) {
+  return globalComponentsConfig.find(config => config.key === key)
 }

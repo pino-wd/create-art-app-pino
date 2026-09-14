@@ -57,7 +57,7 @@ const BREAKPOINT_CONFIG: Record<ResponsiveBreakpoint, BreakpointConfig | null> =
   sm: { threshold: 12, fallback: 12 }, // 平板：小于 12 时使用半宽
   md: { threshold: 8, fallback: 8 }, // 中等屏幕：小于 8 时使用三分之一宽
   lg: null, // 大屏幕：直接使用设置的 span
-  xl: null // 超大屏幕：直接使用设置的 span
+  xl: null, // 超大屏幕：直接使用设置的 span
 }
 
 /**
@@ -85,7 +85,7 @@ const BREAKPOINT_CONFIG: Record<ResponsiveBreakpoint, BreakpointConfig | null> =
 export function calculateResponsiveSpan(
   itemSpan: number | undefined,
   defaultSpan: number,
-  breakpoint: ResponsiveBreakpoint
+  breakpoint: ResponsiveBreakpoint,
 ): number {
   const finalSpan = itemSpan ?? defaultSpan
   const config = BREAKPOINT_CONFIG[breakpoint]

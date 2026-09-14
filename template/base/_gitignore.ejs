@@ -1,6 +1,25 @@
-node_modules
-dist
+# 依赖与构建产物
+node_modules/
+dist/
+coverage/
+.vite/
+
+# 本地环境与缓存
+# 模板自带非敏感默认值的 .env.development 需保持跟踪，仅忽略真实本地覆盖文件
+.env
+.env.*
+!.env.example
+!.env.development
 *.local
-.env.local
+*.tsbuildinfo
+node_modules/.tmp/
 .lychee.cache
 <% if (options.scaffold.reference) { %>.reference/<% } %>
+
+# 系统与编辑器文件
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json

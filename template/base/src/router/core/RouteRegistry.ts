@@ -10,8 +10,8 @@
 import type { Router, RouteRecordRaw } from 'vue-router'
 import type { AppRouteRecord } from '@/types/router'
 import { ComponentLoader } from './ComponentLoader'
-import { RouteValidator } from './RouteValidator'
 import { RouteTransformer } from './RouteTransformer'
+import { RouteValidator } from './RouteValidator'
 
 export class RouteRegistry {
   private router: Router
@@ -62,7 +62,7 @@ export class RouteRegistry {
    * 移除所有动态路由
    */
   unregister(): void {
-    this.removeRouteFns.forEach((fn) => fn())
+    this.removeRouteFns.forEach(fn => fn())
     this.removeRouteFns = []
     this.registered = false
   }

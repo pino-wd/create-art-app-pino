@@ -15,11 +15,11 @@
  * @author Art Design Pro Team
  */
 
-import { computed } from 'vue'
+import type { HeaderBarFeatureConfig } from '@/types'
 import { storeToRefs } from 'pinia'
-import { useSettingStore } from '@/store/modules/setting'
+import { computed } from 'vue'
 import { headerBarConfig } from '@/config/modules/headerBar'
-import { HeaderBarFeatureConfig } from '@/types'
+import { useSettingStore } from '@/store/modules/setting'
 
 /**
  * 顶部栏功能管理
@@ -121,7 +121,7 @@ export function useHeaderBar() {
    */
   const getEnabledFeatures = (): (keyof HeaderBarFeatureConfig)[] => {
     return Object.keys(headerBarConfigRef.value).filter(
-      (key) => headerBarConfigRef.value[key as keyof HeaderBarFeatureConfig]?.enabled
+      key => headerBarConfigRef.value[key as keyof HeaderBarFeatureConfig]?.enabled,
     ) as (keyof HeaderBarFeatureConfig)[]
   }
 
@@ -131,7 +131,7 @@ export function useHeaderBar() {
    */
   const getDisabledFeatures = (): (keyof HeaderBarFeatureConfig)[] => {
     return Object.keys(headerBarConfigRef.value).filter(
-      (key) => !headerBarConfigRef.value[key as keyof HeaderBarFeatureConfig]?.enabled
+      key => !headerBarConfigRef.value[key as keyof HeaderBarFeatureConfig]?.enabled,
     ) as (keyof HeaderBarFeatureConfig)[]
   }
 
@@ -174,6 +174,6 @@ export function useHeaderBar() {
     getEnabledFeatures, // 获取所有启用的功能
     getDisabledFeatures, // 获取所有禁用的功能
     getActiveFeatures, // 获取所有启用的功能（别名）
-    getInactiveFeatures // 获取所有禁用的功能（别名）
+    getInactiveFeatures, // 获取所有禁用的功能（别名）
   }
 }

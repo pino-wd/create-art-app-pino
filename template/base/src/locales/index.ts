@@ -21,8 +21,8 @@
  * @author Art Design Pro Team
  */
 
-import { createI18n } from 'vue-i18n'
 import type { I18n, I18nOptions } from 'vue-i18n'
+import { createI18n } from 'vue-i18n'
 import { LanguageEnum } from '@/enums/appEnum'
 import { getSystemStorage } from '@/utils/storage'
 import { StorageKeyManager } from '@/utils/storage/storage-key-manager'
@@ -41,7 +41,7 @@ const storageKeyManager = new StorageKeyManager()
  */
 const messages = {
   [LanguageEnum.EN]: enMessages,
-  [LanguageEnum.ZH]: zhMessages
+  [LanguageEnum.ZH]: zhMessages,
 }
 
 /**
@@ -50,14 +50,14 @@ const messages = {
  */
 export const languageOptions = [
   { value: LanguageEnum.ZH, label: '简体中文' },
-  { value: LanguageEnum.EN, label: 'English' }
+  { value: LanguageEnum.EN, label: 'English' },
 ]
 
 /**
  * 从存储中获取语言设置
  * @returns 语言设置，如果获取失败则返回默认语言
  */
-const getDefaultLanguage = (): LanguageEnum => {
+function getDefaultLanguage(): LanguageEnum {
   // 尝试从版本化的存储中获取语言设置
   try {
     const storageKey = storageKeyManager.getStorageKey('user')
@@ -69,7 +69,8 @@ const getDefaultLanguage = (): LanguageEnum => {
         return language
       }
     }
-  } catch (error) {
+  }
+  catch (error) {
     console.warn('[i18n] 从版本化存储获取语言设置失败:', error)
   }
 
@@ -82,12 +83,12 @@ const getDefaultLanguage = (): LanguageEnum => {
         return user.language
       }
     }
-  } catch (error) {
+  }
+  catch (error) {
     console.warn('[i18n] 从系统存储获取语言设置失败:', error)
   }
 
   // 返回默认语言
-  console.debug('[i18n] 使用默认语言:', LanguageEnum.ZH)
   return LanguageEnum.ZH
 }
 
@@ -99,7 +100,7 @@ const i18nOptions: I18nOptions = {
   legacy: false,
   globalInjection: true,
   fallbackLocale: LanguageEnum.ZH,
-  messages
+  messages,
 }
 
 /**

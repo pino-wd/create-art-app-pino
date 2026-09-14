@@ -1,12 +1,12 @@
-import App from './App.vue'
 import { createApp } from 'vue'
-import { initStore } from './store'
-import router from './router'
+import App from './App.vue'
+import { setupGlobDirectives } from './directives'
 import language from './locales'
+import router from './router'
+import { initStore } from './store'
+import { setupErrorHandle } from './utils/sys/error-handle'
 import '@styles/core/tailwind.css'
 import '@styles/index.scss'
-import { setupGlobDirectives } from './directives'
-import { setupErrorHandle } from './utils/sys/error-handle'
 
 const app = createApp(App)
 initStore(app)

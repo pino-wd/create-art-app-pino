@@ -43,7 +43,7 @@ export enum CacheInvalidationStrategy {
   /** 清空所有分页缓存（保留不同搜索条件的缓存） */
   CLEAR_PAGINATION = 'clear_pagination',
   /** 不清除缓存 */
-  KEEP_ALL = 'keep_all'
+  KEEP_ALL = 'keep_all',
 }
 
 // 通用 API 响应接口（兼容不同的后端响应格式）
@@ -103,17 +103,18 @@ export class TableCache<T> {
 
     // 添加搜索条件标签
     const searchKeys = Object.keys(params).filter(
-      (key) =>
-        !['current', 'size', 'total'].includes(key) &&
-        params[key] !== undefined &&
-        params[key] !== '' &&
-        params[key] !== null
+      key =>
+        !['current', 'size', 'total'].includes(key)
+        && params[key] !== undefined
+        && params[key] !== ''
+        && params[key] !== null,
     )
 
     if (searchKeys.length > 0) {
-      const searchTag = searchKeys.map((key) => `${key}:${String(params[key])}`).join('|')
+      const searchTag = searchKeys.map(key => `${key}:${String(params[key])}`).join('|')
       tags.add(`search:${searchTag}`)
-    } else {
+    }
+    else {
       tags.add('search:default')
     }
 
@@ -127,7 +128,8 @@ export class TableCache<T> {
 
   // 🔧 优化：LRU 缓存清理
   private evictLRU(): void {
-    if (this.cache.size <= this.maxSize) return
+    if (this.cache.size <= this.maxSize)
+      return
 
     // 找到最少使用的缓存项
     let lruKey = ''
@@ -136,8 +138,8 @@ export class TableCache<T> {
 
     for (const [key, item] of this.cache.entries()) {
       if (
-        item.accessCount < minAccessCount ||
-        (item.accessCount === minAccessCount && item.lastAccessTime < oldestTime)
+        item.accessCount < minAccessCount
+        || (item.accessCount === minAccessCount && item.lastAccessTime < oldestTime)
       ) {
         lruKey = key
         minAccessCount = item.accessCount
@@ -167,7 +169,7 @@ export class TableCache<T> {
       params: key,
       tags,
       accessCount: 1,
-      lastAccessTime: now
+      lastAccessTime: now,
     })
   }
 
@@ -176,7 +178,8 @@ export class TableCache<T> {
     const key = this.generateKey(params)
     const item = this.cache.get(key)
 
-    if (!item) return null
+    if (!item)
+      return null
 
     // 检查是否过期
     if (Date.now() - item.timestamp > this.cacheTime) {
@@ -197,8 +200,8 @@ export class TableCache<T> {
 
     for (const [key, item] of this.cache.entries()) {
       // 检查是否包含任意一个标签
-      const hasMatchingTag = tags.some((tag) =>
-        Array.from(item.tags).some((itemTag) => itemTag.includes(tag))
+      const hasMatchingTag = tags.some(tag =>
+        Array.from(item.tags).some(itemTag => itemTag.includes(tag)),
       )
 
       if (hasMatchingTag) {
@@ -228,7 +231,7 @@ export class TableCache<T> {
   }
 
   // 获取缓存统计信息
-  getStats(): { total: number; size: string; hitRate: string } {
+  getStats(): { total: number, size: string, hitRate: string } {
     const total = this.cache.size
     let totalSize = 0
     let totalAccess = 0
@@ -246,7 +249,7 @@ export class TableCache<T> {
     return {
       total,
       size: `${sizeInKB}KB`,
-      hitRate: `${avgHits} avg hits`
+      hitRate: `${avgHits} avg hits`,
     }
   }
 

@@ -25,7 +25,7 @@ export enum MenuTypeEnum {
   /** 顶部+左侧菜单 */
   TOP_LEFT = 'top-left',
   /** 双栏菜单 */
-  DUAL_MENU = 'dual-menu'
+  DUAL_MENU = 'dual-menu',
 }
 
 /**
@@ -37,7 +37,7 @@ export enum SystemThemeEnum {
   /** 亮色主题 */
   LIGHT = 'light',
   /** 自动主题（跟随系统） */
-  AUTO = 'auto'
+  AUTO = 'auto',
 }
 
 /**
@@ -49,7 +49,7 @@ export enum MenuThemeEnum {
   /** 亮色主题 */
   LIGHT = 'light',
   /** 设计主题 */
-  DESIGN = 'design'
+  DESIGN = 'design',
 }
 
 /**
@@ -57,7 +57,7 @@ export enum MenuThemeEnum {
  */
 export enum MenuWidth {
   /** 收起宽度 */
-  CLOSE = '64px'
+  CLOSE = '64px',
 }
 
 /**
@@ -67,7 +67,7 @@ export enum LanguageEnum {
   /** 中文 */
   ZH = 'zh',
   /** 英文 */
-  EN = 'en'
+  EN = 'en',
 }
 
 /**
@@ -77,5 +77,5 @@ export enum ContainerWidthEnum {
   /** 全屏宽度 */
   FULL = '100%',
   /** 固定宽度 */
-  BOXED = '1200px'
+  BOXED = '1200px',
 }

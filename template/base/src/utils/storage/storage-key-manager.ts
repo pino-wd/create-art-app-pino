@@ -57,7 +57,7 @@ export class StorageKeyManager {
     const storageKeys = Object.keys(localStorage)
     const pattern = StorageConfig.createKeyPattern(storeId)
 
-    return storageKeys.find((key) => pattern.test(key) && localStorage.getItem(key)) || null
+    return storageKeys.find(key => pattern.test(key) && localStorage.getItem(key)) || null
   }
 
   /**
@@ -68,9 +68,9 @@ export class StorageKeyManager {
       const existingData = localStorage.getItem(fromKey)
       if (existingData) {
         localStorage.setItem(toKey, existingData)
-        console.info(`[Storage] 已迁移数据: ${fromKey} → ${toKey}`)
       }
-    } catch (error) {
+    }
+    catch (error) {
       console.warn(`[Storage] 数据迁移失败: ${fromKey}`, error)
     }
   }

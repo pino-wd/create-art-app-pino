@@ -66,7 +66,7 @@ class StorageCompatibilityManager {
     const currentVersionPattern = StorageConfig.createCurrentVersionPattern()
 
     return storageKeys.some(
-      (key) => currentVersionPattern.test(key) && localStorage.getItem(key) !== null
+      key => currentVersionPattern.test(key) && localStorage.getItem(key) !== null,
     )
   }
 
@@ -77,7 +77,7 @@ class StorageCompatibilityManager {
     const storageKeys = Object.keys(localStorage)
     const versionPattern = StorageConfig.createVersionPattern()
 
-    return storageKeys.some((key) => versionPattern.test(key) && localStorage.getItem(key) !== null)
+    return storageKeys.some(key => versionPattern.test(key) && localStorage.getItem(key) !== null)
   }
 
   /**
@@ -87,7 +87,8 @@ class StorageCompatibilityManager {
     try {
       const systemStorage = this.getSystemStorage()
       return systemStorage || {}
-    } catch (error) {
+    }
+    catch (error) {
       console.warn('[Storage] 解析旧格式存储数据失败:', error)
       return {}
     }
@@ -101,7 +102,7 @@ class StorageCompatibilityManager {
       type: 'error',
       offset: 40,
       duration: 5000,
-      message: '系统检测到本地数据异常，请重新登录系统恢复使用！'
+      message: '系统检测到本地数据异常，请重新登录系统恢复使用！',
     })
   }
 
@@ -114,8 +115,8 @@ class StorageCompatibilityManager {
         localStorage.clear()
         useUserStore().logOut()
         router.push({ name: 'Login' })
-        console.info('[Storage] 已执行系统登出')
-      } catch (error) {
+      }
+      catch (error) {
         console.error('[Storage] 系统登出失败:', error)
       }
     }, StorageConfig.LOGOUT_DELAY)
@@ -161,9 +162,10 @@ class StorageCompatibilityManager {
         return true
       }
 
-      console.debug('[Storage] 发现旧版本存储数据')
+      // 发现旧版本存储数据，视为有效
       return true
-    } catch (error) {
+    }
+    catch (error) {
       console.error('[Storage] 存储数据验证失败:', error)
       // 只有在需要验证登录状态时才处理错误
       if (requireAuth) {
@@ -209,7 +211,8 @@ class StorageCompatibilityManager {
 
       console.warn('[Storage] 存储兼容性检查失败')
       return false
-    } catch (error) {
+    }
+    catch (error) {
       console.error('[Storage] 兼容性检查异常:', error)
       return false
     }

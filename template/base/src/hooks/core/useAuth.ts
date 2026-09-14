@@ -30,17 +30,17 @@
  * @author Art Design Pro Team
  */
 
-import { useRoute } from 'vue-router'
-import { storeToRefs } from 'pinia'
-import { useUserStore } from '@/store/modules/user'
-import { useAppMode } from '@/hooks/core/useAppMode'
 import type { AppRouteRecord } from '@/types/router'
+import { storeToRefs } from 'pinia'
+import { useRoute } from 'vue-router'
+import { useAppMode } from '@/hooks/core/useAppMode'
+import { useUserStore } from '@/store/modules/user'
 
 type AuthItem = NonNullable<AppRouteRecord['meta']['authList']>[number]
 
 const userStore = useUserStore()
 
-export const useAuth = () => {
+export function useAuth() {
   const route = useRoute()
   const { isFrontendMode } = useAppMode()
   const { info } = storeToRefs(userStore)
@@ -65,10 +65,10 @@ export const useAuth = () => {
     }
 
     // 后端模式
-    return backendAuthList.some((item) => item?.authMark === auth)
+    return backendAuthList.some(item => item?.authMark === auth)
   }
 
   return {
-    hasAuth
+    hasAuth,
   }
 }

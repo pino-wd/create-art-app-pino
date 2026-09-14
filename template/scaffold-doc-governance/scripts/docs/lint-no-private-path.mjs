@@ -10,8 +10,8 @@ import process from 'node:process'
 
 const DOCS_DIR = path.resolve('docs')
 const PRIVATE_PATH_PATTERNS = [
-  /\/(?:Users|home)\/[A-Za-z0-9_.-]+\//,
-  /[A-Za-z]:\\Users\\[^\\\r\n]+\\/i,
+  /\/(?:Users|home)\/[\w.-]+\//,
+  /[A-Z]:\\Users\\[^\\\r\n]+\\/i,
 ]
 
 if (!fs.existsSync(DOCS_DIR)) {
@@ -20,7 +20,7 @@ if (!fs.existsSync(DOCS_DIR)) {
 }
 
 const markdownFiles = collectFiles(DOCS_DIR)
-const violations: Array<{ file: string, line: number, content: string }> = []
+const violations = []
 
 for (const filePath of markdownFiles) {
   const content = fs.readFileSync(filePath, 'utf-8')
@@ -50,8 +50,8 @@ for (const violation of violations) {
 console.error('\n⛔ Private absolute paths detected in docs/. Use relative paths instead.')
 process.exit(1)
 
-function collectFiles(dir: string): string[] {
-  const results: string[] = []
+function collectFiles(dir) {
+  const results = []
 
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     const fullPath = path.join(dir, entry.name)

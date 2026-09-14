@@ -1,3 +1,4 @@
+import type { Emitter } from 'mitt'
 /**
  * 全局事件总线模块
  *
@@ -41,10 +42,12 @@
  * @module utils/sys/mittBus
  * @author Art Design Pro Team
  */
-import mitt, { type Emitter } from 'mitt'
+import mitt from 'mitt'
 
 // 定义事件类型映射
-type Events = {
+// 注意：mitt v3 的 Emitter 约束 Events 满足 Record<EventType, unknown>，
+// interface 无隐式索引签名会违反该约束，必须用 type 交叉 Record 形式声明
+type Events = Record<string, unknown> & {
   // 烟花效果事件 - 可选的图片URL参数
   triggerFireworks: string | undefined
   // 打开设置面板事件 - 无参数

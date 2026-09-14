@@ -150,10 +150,10 @@ draft ──→ active ──┬──→ superseded （被新版本取代，必
 
 必须配 4 道护栏。脚本统一放 `scripts/docs/`，命令出口为 `package.json` 中的 `docs:lint`：
 
-| 护栏                                              | 工具                      | 不通过则 |
-| ------------------------------------------------- | ------------------------- | -------- |
-| Frontmatter 必填字段 + 枚举值                     | `lint-frontmatter.mjs`    | 阻断合并 |
-| 文档命名（kebab-case + 禁版本号 + 日期/编号前缀） | `lint-naming.mjs`         | 阻断提交 |
+| 护栏                                              | 工具                       | 不通过则 |
+| ------------------------------------------------- | -------------------------- | -------- |
+| Frontmatter 必填字段 + 枚举值                     | `lint-frontmatter.mjs`     | 阻断合并 |
+| 文档命名（kebab-case + 禁版本号 + 日期/编号前缀） | `lint-naming.mjs`          | 阻断提交 |
 | 私人绝对路径黑名单                                | `lint-no-private-path.mjs` | 阻断提交 |
 | Markdown 死链                                     | `lint-links.mjs`（lychee） | 阻断合并 |
 

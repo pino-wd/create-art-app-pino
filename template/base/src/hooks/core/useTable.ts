@@ -17,103 +17,28 @@
  * @author Art Design Pro Team
  */
 
-import { ref, reactive, computed, onMounted, onUnmounted, nextTick, readonly } from 'vue'
+import type { ApiResponse } from '../../utils/table/tableCache'
+import type { TableError } from '../../utils/table/tableUtils'
+import type { InferApiParams, InferApiResponse, InferRecordType, UseTableConfig } from './useTableConfig'
 import { useWindowSize } from '@vueuse/core'
-import { useTableColumns } from './useTableColumns'
-import type { ColumnOption } from '@/types/component'
+import { computed, onMounted, onUnmounted, reactive, readonly, ref } from 'vue'
 import {
-  TableCache,
   CacheInvalidationStrategy,
-  type ApiResponse
+  TableCache,
 } from '../../utils/table/tableCache'
+import { tableConfig } from '../../utils/table/tableConfig'
 import {
-  type TableError,
+  createErrorHandler,
+  createSmartDebounce,
   defaultResponseAdapter,
   extractTableData,
   updatePaginationFromResponse,
-  createSmartDebounce,
-  createErrorHandler
 } from '../../utils/table/tableUtils'
-import { tableConfig } from '../../utils/table/tableConfig'
-
-// 类型推导工具类型
-type InferApiParams<T> = T extends (params: infer P) => any ? P : never
-type InferApiResponse<T> = T extends (params: any) => Promise<infer R> ? R : never
-type InferRecordType<T> = T extends Api.Common.PaginatedResponse<infer U> ? U : never
-
-// 优化的配置接口 - 支持自动类型推导
-export interface UseTableConfig<
-  TApiFn extends (params: any) => Promise<any> = (params: any) => Promise<any>,
-  TRecord = InferRecordType<InferApiResponse<TApiFn>>,
-  TParams = InferApiParams<TApiFn>,
-  TResponse = InferApiResponse<TApiFn>
-> {
-  // 核心配置
-  core: {
-    /** API 请求函数 */
-    apiFn: TApiFn
-    /** 默认请求参数 */
-    apiParams?: Partial<TParams>
-    /** 排除 apiParams 中的属性 */
-    excludeParams?: string[]
-    /** 是否立即加载数据 */
-    immediate?: boolean
-    /** 列配置工厂函数 */
-    columnsFactory?: () => ColumnOption<TRecord>[]
-    /** 自定义分页字段映射 */
-    paginationKey?: {
-      /** 当前页码字段名，默认为 'current' */
-      current?: string
-      /** 每页条数字段名，默认为 'size' */
-      size?: string
-    }
-  }
-
-  // 数据处理
-  transform?: {
-    /** 数据转换函数 */
-    dataTransformer?: (data: TRecord[]) => TRecord[]
-    /** 响应数据适配器 */
-    responseAdapter?: (response: TResponse) => ApiResponse<TRecord>
-  }
-
-  // 性能优化
-  performance?: {
-    /** 是否启用缓存 */
-    enableCache?: boolean
-    /** 缓存时间（毫秒） */
-    cacheTime?: number
-    /** 防抖延迟时间（毫秒） */
-    debounceTime?: number
-    /** 最大缓存条数限制 */
-    maxCacheSize?: number
-  }
-
-  // 生命周期钩子
-  hooks?: {
-    /** 数据加载成功回调（仅网络请求成功时触发） */
-    onSuccess?: (data: TRecord[], response: ApiResponse<TRecord>) => void
-    /** 错误处理回调 */
-    onError?: (error: TableError) => void
-    /** 缓存命中回调（从缓存获取数据时触发） */
-    onCacheHit?: (data: TRecord[], response: ApiResponse<TRecord>) => void
-    /** 加载状态变化回调 */
-    onLoading?: (loading: boolean) => void
-    /** 重置表单回调函数 */
-    resetFormCallback?: () => void
-  }
-
-  // 调试配置
-  debug?: {
-    /** 是否启用日志输出 */
-    enableLog?: boolean
-    /** 日志级别 */
-    logLevel?: 'info' | 'warn' | 'error'
-  }
-}
+import { useTableColumns } from './useTableColumns'
+import { createTableRefreshStrategies } from './useTableRefresh'
 
 export function useTable<TApiFn extends (params: any) => Promise<any>>(
-  config: UseTableConfig<TApiFn>
+  config: UseTableConfig<TApiFn>,
 ) {
   return useTableImpl(config)
 }
@@ -130,7 +55,7 @@ export function useTable<TApiFn extends (params: any) => Promise<any>>(
  * - 列配置管理
  */
 function useTableImpl<TApiFn extends (params: any) => Promise<any>>(
-  config: UseTableConfig<TApiFn>
+  config: UseTableConfig<TApiFn>,
 ) {
   type TRecord = InferRecordType<InferApiResponse<TApiFn>>
   type TParams = InferApiParams<TApiFn>
@@ -141,17 +66,17 @@ function useTableImpl<TApiFn extends (params: any) => Promise<any>>(
       excludeParams = [],
       immediate = true,
       columnsFactory,
-      paginationKey
+      paginationKey,
     },
     transform: { dataTransformer, responseAdapter = defaultResponseAdapter } = {},
     performance: {
       enableCache = false,
       cacheTime = 5 * 60 * 1000,
       debounceTime = 300,
-      maxCacheSize = 50
+      maxCacheSize = 50,
     } = {},
     hooks: { onSuccess, onError, onCacheHit, resetFormCallback } = {},
-    debug: { enableLog = false } = {}
+    debug: { enableLog = false } = {},
   } = config
 
   // 分页字段名配置：优先使用传入的配置，否则使用全局配置
@@ -163,9 +88,11 @@ function useTableImpl<TApiFn extends (params: any) => Promise<any>>(
 
   // 日志工具函数
   const logger = {
+    // info 级日志不落控制台（no-console 仅允许 warn/error），保留接口以维持调用面
     log: (message: string, ...args: unknown[]) => {
       if (enableLog) {
-        console.log(`[useTable] ${message}`, ...args)
+        void message
+        void args
       }
     },
     warn: (message: string, ...args: unknown[]) => {
@@ -177,7 +104,7 @@ function useTableImpl<TApiFn extends (params: any) => Promise<any>>(
       if (enableLog) {
         console.error(`[useTable] ${message}`, ...args)
       }
-    }
+    },
   }
 
   // 缓存实例
@@ -197,32 +124,32 @@ function useTableImpl<TApiFn extends (params: any) => Promise<any>>(
   // 请求取消控制器
   let abortController: AbortController | null = null
 
-  // 缓存清理定时器
-  let cacheCleanupTimer: NodeJS.Timeout | null = null
+  // 缓存清理定时器（ReturnType 写法避免依赖 NodeJS 命名空间，DOM/Node 环境通用）
+  let cacheCleanupTimer: ReturnType<typeof setTimeout> | null = null
 
   // 搜索参数
   const searchParams = reactive(
     Object.assign(
       {
         [pageKey]: 1,
-        [sizeKey]: 10
+        [sizeKey]: 10,
       },
-      apiParams || {}
-    ) as TParams
+      apiParams || {},
+    ) as TParams,
   )
 
   // 分页配置
   const pagination = reactive<Api.Common.PaginationParams>({
     current: ((searchParams as Record<string, unknown>)[pageKey] as number) || 1,
     size: ((searchParams as Record<string, unknown>)[sizeKey] as number) || 10,
-    total: 0
+    total: 0,
   })
 
   // 移动端分页 (响应式)
   const { width } = useWindowSize()
   const mobilePagination = computed(() => ({
     ...pagination,
-    small: width.value < 768
+    small: width.value < 768,
   }))
 
   // 列配置
@@ -237,7 +164,8 @@ function useTableImpl<TApiFn extends (params: any) => Promise<any>>(
   const cacheInfo = computed(() => {
     // 依赖触发器，确保缓存变化时重新计算
     void cacheUpdateTrigger.value
-    if (!cache) return { total: 0, size: '0KB', hitRate: '0 avg hits' }
+    if (!cache)
+      return { total: 0, size: '0KB', hitRate: '0 avg hits' }
     return cache.getStats()
   })
 
@@ -246,7 +174,8 @@ function useTableImpl<TApiFn extends (params: any) => Promise<any>>(
 
   // 清理缓存，根据不同的业务场景选择性地清理缓存
   const clearCache = (strategy: CacheInvalidationStrategy, context?: string): void => {
-    if (!cache) return
+    if (!cache)
+      return
 
     let clearedCount = 0
 
@@ -278,7 +207,7 @@ function useTableImpl<TApiFn extends (params: any) => Promise<any>>(
   // 获取数据的核心方法
   const fetchData = async (
     params?: Partial<TParams>,
-    useCache = enableCache
+    useCache = enableCache,
   ): Promise<ApiResponse<TRecord>> => {
     // 取消上一个请求
     if (abortController) {
@@ -299,9 +228,9 @@ function useTableImpl<TApiFn extends (params: any) => Promise<any>>(
         searchParams,
         {
           [pageKey]: pagination.current,
-          [sizeKey]: pagination.size
+          [sizeKey]: pagination.size,
         },
-        params || {}
+        params || {},
       ) as TParams
 
       // 剔除不需要的参数
@@ -390,7 +319,8 @@ function useTableImpl<TApiFn extends (params: any) => Promise<any>>(
       }
 
       return standardResponse
-    } catch (err) {
+    }
+    catch (err) {
       if (err instanceof Error && err.message === '请求已取消') {
         // 请求被取消，回到 idle 状态
         loadingState.value = 'idle'
@@ -402,7 +332,8 @@ function useTableImpl<TApiFn extends (params: any) => Promise<any>>(
       data.value = []
       const tableError = handleError(err, '获取表格数据失败')
       throw tableError
-    } finally {
+    }
+    finally {
       // 只有当前控制器是活跃的才清空
       if (abortController === currentController) {
         abortController = null
@@ -414,7 +345,8 @@ function useTableImpl<TApiFn extends (params: any) => Promise<any>>(
   const getData = async (params?: Partial<TParams>): Promise<ApiResponse<TRecord> | void> => {
     try {
       return await fetchData(params)
-    } catch {
+    }
+    catch {
       // 错误已在 fetchData 中处理
       return Promise.resolve()
     }
@@ -430,7 +362,8 @@ function useTableImpl<TApiFn extends (params: any) => Promise<any>>(
 
     try {
       return await fetchData(params, false) // 搜索时不使用缓存
-    } catch {
+    }
+    catch {
       // 错误已在 fetchData 中处理
       return Promise.resolve()
     }
@@ -439,167 +372,33 @@ function useTableImpl<TApiFn extends (params: any) => Promise<any>>(
   // 智能防抖搜索函数
   const debouncedGetDataByPage = createSmartDebounce(getDataByPage, debounceTime)
 
-  // 重置搜索参数
-  const resetSearchParams = async (): Promise<void> => {
-    // 取消防抖的搜索
-    debouncedGetDataByPage.cancel()
-
-    // 保存分页相关的默认值
-    const paramsRecord = searchParams as Record<string, unknown>
-    const defaultPagination = {
-      [pageKey]: 1,
-      [sizeKey]: (paramsRecord[sizeKey] as number) || 10
-    }
-
-    // 清空所有搜索参数
-    Object.keys(searchParams).forEach((key) => {
-      delete paramsRecord[key]
-    })
-
-    // 重新设置默认参数
-    Object.assign(searchParams, apiParams || {}, defaultPagination)
-
-    // 重置分页
-    pagination.current = 1
-    pagination.size = defaultPagination[sizeKey] as number
-
-    // 清空错误状态
-    error.value = null
-
-    // 清空缓存
-    clearCache(CacheInvalidationStrategy.CLEAR_ALL, '重置搜索')
-
-    // 重新获取数据
-    await getData()
-
-    // 执行重置回调
-    if (resetFormCallback) {
-      await nextTick()
-      resetFormCallback()
-    }
-  }
-
-  // 替换搜索参数：适用于表单查询，避免旧字段残留
-  const replaceSearchParams = (params?: Partial<TParams>): void => {
-    const paramsRecord = searchParams as Record<string, unknown>
-    const currentSize = pagination.size || ((paramsRecord[sizeKey] as number) ?? 10)
-
-    Object.keys(searchParams).forEach((key) => {
-      if (key !== pageKey && key !== sizeKey) {
-        delete paramsRecord[key]
-      }
-    })
-
-    Object.assign(
-      searchParams,
-      {
-        [pageKey]: 1,
-        [sizeKey]: currentSize
-      },
-      params || {}
-    )
-
-    pagination.current = 1
-    pagination.size = currentSize
-  }
-
-  // 防重复调用的标志
-  let isCurrentChanging = false
-
-  // 处理分页大小变化
-  const handleSizeChange = async (newSize: number): Promise<void> => {
-    if (newSize <= 0) return
-
-    debouncedGetDataByPage.cancel()
-
-    const paramsRecord = searchParams as Record<string, unknown>
-    pagination.size = newSize
-    pagination.current = 1
-    paramsRecord[sizeKey] = newSize
-    paramsRecord[pageKey] = 1
-
-    clearCache(CacheInvalidationStrategy.CLEAR_CURRENT, '分页大小变化')
-
-    await getData()
-  }
-
-  // 处理当前页变化
-  const handleCurrentChange = async (newCurrent: number): Promise<void> => {
-    if (newCurrent <= 0) return
-
-    // 修复：防止重复调用
-    if (isCurrentChanging) {
-      return
-    }
-
-    // 修复：如果当前页没有变化，不需要重新请求
-    if (pagination.current === newCurrent) {
-      logger.log('分页页码未变化，跳过请求')
-      return
-    }
-
-    try {
-      isCurrentChanging = true
-
-      // 修复：只更新必要的状态
-      const paramsRecord = searchParams as Record<string, unknown>
-      pagination.current = newCurrent
-      // 只有当 searchParams 的分页字段与新值不同时才更新
-      if (paramsRecord[pageKey] !== newCurrent) {
-        paramsRecord[pageKey] = newCurrent
-      }
-
-      await getData()
-    } finally {
-      isCurrentChanging = false
-    }
-  }
-
-  // 针对不同业务场景的刷新方法
-
-  // 新增后刷新：回到第一页并清空分页缓存（适用于新增数据后）
-  const refreshCreate = async (): Promise<void> => {
-    debouncedGetDataByPage.cancel()
-    pagination.current = 1
-    ;(searchParams as Record<string, unknown>)[pageKey] = 1
-    clearCache(CacheInvalidationStrategy.CLEAR_PAGINATION, '新增数据')
-    await getData()
-  }
-
-  // 更新后刷新：保持当前页，仅清空当前搜索缓存（适用于更新数据后）
-  const refreshUpdate = async (): Promise<void> => {
-    clearCache(CacheInvalidationStrategy.CLEAR_CURRENT, '编辑数据')
-    await getData()
-  }
-
-  // 删除后刷新：智能处理页码，避免空页面（适用于删除数据后）
-  const refreshRemove = async (): Promise<void> => {
-    const { current } = pagination
-
-    // 清除缓存并获取最新数据
-    clearCache(CacheInvalidationStrategy.CLEAR_CURRENT, '删除数据')
-    await getData()
-
-    // 如果当前页为空且不是第一页，回到上一页
-    if (data.value.length === 0 && current > 1) {
-      pagination.current = current - 1
-      ;(searchParams as Record<string, unknown>)[pageKey] = current - 1
-      await getData()
-    }
-  }
-
-  // 全量刷新：清空所有缓存，重新获取数据（适用于手动刷新按钮）
-  const refreshData = async (): Promise<void> => {
-    debouncedGetDataByPage.cancel()
-    clearCache(CacheInvalidationStrategy.CLEAR_ALL, '手动刷新')
-    await getData()
-  }
-
-  // 轻量刷新：仅清空当前搜索条件的缓存，保持分页状态（适用于定时刷新）
-  const refreshSoft = async (): Promise<void> => {
-    clearCache(CacheInvalidationStrategy.CLEAR_CURRENT, '软刷新')
-    await getData()
-  }
+  // 搜索与分页刷新动作（单文件 650 行熔断，拆出至 useTableRefresh.ts）：
+  // 依赖经参数注入保持拆分前行为，cancelDebouncedSearch / log 分别对应实例的
+  // debouncedGetDataByPage.cancel 与 logger.log，isCurrentChanging 防重入标志为工厂实例私有闭包状态。
+  const {
+    resetSearchParams,
+    replaceSearchParams,
+    handleSizeChange,
+    handleCurrentChange,
+    refreshCreate,
+    refreshUpdate,
+    refreshRemove,
+    refreshData,
+    refreshSoft,
+  } = createTableRefreshStrategies<TParams>({
+    pagination,
+    searchParams,
+    pageKey,
+    sizeKey,
+    apiParams,
+    data,
+    error,
+    clearCache,
+    getData,
+    cancelDebouncedSearch: () => debouncedGetDataByPage.cancel(),
+    resetFormCallback,
+    log: logger.log,
+  })
 
   // 取消当前请求
   const cancelRequest = (): void => {
@@ -618,7 +417,8 @@ function useTableImpl<TApiFn extends (params: any) => Promise<any>>(
 
   // 清理已过期的缓存条目，释放内存空间
   const clearExpiredCache = (): number => {
-    if (!cache) return 0
+    if (!cache)
+      return 0
     const cleanedCount = cache.cleanupExpired()
     if (cleanedCount > 0) {
       // 手动触发缓存状态更新
@@ -751,8 +551,8 @@ function useTableImpl<TApiFn extends (params: any) => Promise<any>>(
       /** 获取所有列配置 */
       getAllColumns: columnConfig.getAllColumns,
       /** 重置所有列配置到默认状态 */
-      resetColumns: columnConfig.resetColumns
-    })
+      resetColumns: columnConfig.resetColumns,
+    }),
   }
 }
 
@@ -760,3 +560,5 @@ function useTableImpl<TApiFn extends (params: any) => Promise<any>>(
 export { CacheInvalidationStrategy } from '../../utils/table/tableCache'
 export type { ApiResponse, CacheItem } from '../../utils/table/tableCache'
 export type { BaseRequestParams, TableError } from '../../utils/table/tableUtils'
+// 配置契约随拆分移至 useTableConfig.ts，此处保持 useTable 原导出面不变
+export type { UseTableConfig } from './useTableConfig'

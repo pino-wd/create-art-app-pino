@@ -31,13 +31,13 @@
  * @author Art Design Pro Team
  */
 
-import { useSettingStore } from '@/store/modules/setting'
-import { SystemThemeEnum } from '@/enums/appEnum'
-import AppConfig from '@/config'
-import { SystemThemeTypes } from '@/types/store'
-import { getDarkColor, getLightColor, setElementThemeColor } from '@/utils/ui'
+import type { SystemThemeTypes } from '@/types/store'
 import { usePreferredDark } from '@vueuse/core'
 import { watch } from 'vue'
+import AppConfig from '@/config'
+import { SystemThemeEnum } from '@/enums/appEnum'
+import { useSettingStore } from '@/store/modules/setting'
+import { getDarkColor, getLightColor, setElementThemeColor } from '@/utils/ui'
 
 export function useTheme() {
   const settingStore = useSettingStore()
@@ -82,7 +82,7 @@ export function useTheme() {
     for (let i = 1; i <= 9; i++) {
       document.documentElement.style.setProperty(
         `--el-color-primary-light-${i}`,
-        isDark ? `${getDarkColor(primary, i / 10)}` : `${getLightColor(primary, i / 10)}`
+        isDark ? `${getDarkColor(primary, i / 10)}` : `${getLightColor(primary, i / 10)}`,
       )
     }
 
@@ -110,7 +110,8 @@ export function useTheme() {
   const switchThemeStyles = (theme: SystemThemeEnum) => {
     if (theme === SystemThemeEnum.AUTO) {
       setSystemAutoTheme()
-    } else {
+    }
+    else {
       setSystemTheme(theme)
     }
   }
@@ -119,7 +120,7 @@ export function useTheme() {
     setSystemTheme,
     setSystemAutoTheme,
     switchThemeStyles,
-    prefersDark
+    prefersDark,
   }
 }
 
@@ -168,7 +169,7 @@ export function initializeTheme() {
           applyThemeByMode()
         }
       },
-      { immediate: false }
+      { immediate: false },
     )
   }
 }

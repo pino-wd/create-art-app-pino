@@ -1,4 +1,4 @@
-import { AppRouteRecord } from '@/types/router'
+import type { AppRouteRecord } from '@/types/router'
 import { RoutesAlias } from '../routesAlias'
 
 /**
@@ -34,5 +34,5 @@ export const asyncRoutes: AppRouteRecord[] = [
         },
       },
     ],
-  }
+  },
 ]

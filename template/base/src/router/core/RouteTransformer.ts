@@ -8,8 +8,8 @@
  */
 
 import type { RouteRecordRaw } from 'vue-router'
+import type { ComponentLoader } from './ComponentLoader'
 import type { AppRouteRecord } from '@/types/router'
-import { ComponentLoader } from './ComponentLoader'
 import { IframeRouteManager } from './IframeRouteManager'
 
 interface ConvertedRoute extends Omit<RouteRecordRaw, 'children'> {
@@ -36,21 +36,23 @@ export class RouteTransformer {
     // 基础路由配置
     const converted: ConvertedRoute = {
       ...routeConfig,
-      component: undefined
+      component: undefined,
     }
 
     // 处理不同类型的路由
     if (route.meta.isIframe) {
       this.handleIframeRoute(converted, route, depth)
-    } else if (this.isFirstLevelRoute(route, depth)) {
+    }
+    else if (this.isFirstLevelRoute(route, depth)) {
       this.handleFirstLevelRoute(converted, route, component as string)
-    } else {
+    }
+    else {
       this.handleNormalRoute(converted, component as string)
     }
 
     // 递归处理子路由
     if (children?.length) {
-      converted.children = children.map((child) => this.transform(child, depth + 1))
+      converted.children = children.map(child => this.transform(child, depth + 1))
     }
 
     return converted
@@ -69,7 +71,7 @@ export class RouteTransformer {
   private handleIframeRoute(
     targetRoute: ConvertedRoute,
     sourceRoute: AppRouteRecord,
-    depth: number
+    depth: number,
   ): void {
     if (depth === 0) {
       // 顶级 iframe：用 Layout 包裹
@@ -80,10 +82,11 @@ export class RouteTransformer {
       targetRoute.children = [
         {
           ...sourceRoute,
-          component: this.componentLoader.loadIframe()
-        } as ConvertedRoute
+          component: this.componentLoader.loadIframe(),
+        } as ConvertedRoute,
       ]
-    } else {
+    }
+    else {
       // 非顶级（嵌套）iframe：直接使用 Iframe.vue
       targetRoute.component = this.componentLoader.loadIframe()
     }
@@ -98,7 +101,7 @@ export class RouteTransformer {
   private handleFirstLevelRoute(
     converted: ConvertedRoute,
     route: AppRouteRecord,
-    component: string | undefined
+    component: string | undefined,
   ): void {
     converted.component = this.componentLoader.loadLayout()
     converted.path = this.extractFirstSegment(route.path || '')
@@ -108,8 +111,8 @@ export class RouteTransformer {
     converted.children = [
       {
         ...route,
-        component: component ? this.componentLoader.load(component) : undefined
-      } as ConvertedRoute
+        component: component ? this.componentLoader.load(component) : undefined,
+      } as ConvertedRoute,
     ]
   }
 

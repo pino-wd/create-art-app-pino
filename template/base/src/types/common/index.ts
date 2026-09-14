@@ -46,7 +46,7 @@ export type ActionType = 'create' | 'update' | 'delete' | 'view'
 export type Recordable<T = any> = Record<string, T>
 
 // 键值对类型
-export type KeyValue<T = any> = {
+export interface KeyValue<T = any> {
   key: string
   value: T
   label?: string

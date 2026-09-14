@@ -33,7 +33,7 @@ import type { App } from 'vue'
 
 const IGNORABLE_SCRIPT_ERRORS = [
   'ResizeObserver loop completed with undelivered notifications.',
-  'ResizeObserver loop limit exceeded'
+  'ResizeObserver loop limit exceeded',
 ]
 
 function normalizeErrorMessage(message: Event | string): string {
@@ -55,7 +55,7 @@ function isIgnorableScriptError(message: Event | string, source?: string): boole
     return false
   }
 
-  if (IGNORABLE_SCRIPT_ERRORS.some((item) => normalizedMessage.includes(item))) {
+  if (IGNORABLE_SCRIPT_ERRORS.some(item => normalizedMessage.includes(item))) {
     // 浏览器/扩展在布局抖动时常见的 ResizeObserver 噪声，不作为真实异常处理
     return true
   }
@@ -85,7 +85,7 @@ export function scriptErrorHandler(
   source?: string,
   lineno?: number,
   colno?: number,
-  error?: Error
+  error?: Error,
 ): boolean {
   if (isIgnorableScriptError(message, source)) {
     return true
@@ -115,20 +115,20 @@ export function registerResourceErrorHandler() {
     (event: Event) => {
       const target = event.target as HTMLElement
       if (
-        target &&
-        (target.tagName === 'IMG' || target.tagName === 'SCRIPT' || target.tagName === 'LINK')
+        target
+        && (target.tagName === 'IMG' || target.tagName === 'SCRIPT' || target.tagName === 'LINK')
       ) {
         console.error('[ResourceError]', {
           tagName: target.tagName,
           src:
-            (target as HTMLImageElement).src ||
-            (target as HTMLScriptElement).src ||
-            (target as HTMLLinkElement).href
+            (target as HTMLImageElement).src
+            || (target as HTMLScriptElement).src
+            || (target as HTMLLinkElement).href,
         })
         // reportError({ type: 'resource', target })
       }
     },
-    true // 捕获阶段才能监听到资源错误
+    true, // 捕获阶段才能监听到资源错误
   )
 }
 

@@ -1,5 +1,4 @@
 <% if (options.scaffold.commitChecks) { %>export default {
   '*.{js,ts,vue}': ['eslint --fix'],
 <% if (options.scaffold.docGovernance) { %>  'docs/**/*.md': ['node scripts/docs/lint-frontmatter.mjs', 'node scripts/docs/lint-naming.mjs'],
-<% } %>}
-<% } %>
+<% } %>}<% } %>

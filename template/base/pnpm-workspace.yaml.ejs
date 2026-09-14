@@ -1,0 +1,11 @@
+<% if (options.packageManager === 'pnpm') { %>shellEmulator: true
+trustPolicy: no-downgrade
+trustPolicyExclude:
+  - chokidar
+  - semver
+
+# 仅放行已知安全的构建脚本依赖（vite 工具链），其余依赖的 postinstall 默认不执行
+allowBuilds:
+  '@parcel/watcher': true
+  esbuild: true
+<% } _%>

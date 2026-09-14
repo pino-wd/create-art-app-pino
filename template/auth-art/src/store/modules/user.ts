@@ -7,10 +7,10 @@ import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import { LanguageEnum } from '@/enums/appEnum'
 import { router } from '@/router'
-import { useSettingStore } from './setting'
-import { useMenuStore } from './menu'
-import { setPageTitle } from '@/utils/router'
 import { resetRouterState } from '@/router/guards/beforeEach'
+import { setPageTitle } from '@/utils/router'
+import { useMenuStore } from './menu'
+import { useSettingStore } from './setting'
 
 export interface UserInfo {
   roles?: string[]

@@ -13,8 +13,8 @@ export class ComponentLoader {
   private modules: Record<string, () => Promise<any>>
 
   constructor() {
-    // 动态导入 views 目录下所有 .vue 组件
-    this.modules = import.meta.glob('../../views/**/*.vue')
+    // 动态导入 pages 目录下所有 .vue 组件
+    this.modules = import.meta.glob('../../pages/**/*.vue')
   }
 
   /**
@@ -26,15 +26,15 @@ export class ComponentLoader {
     }
 
     // 构建可能的路径
-    const fullPath = `../../views${componentPath}.vue`
-    const fullPathWithIndex = `../../views${componentPath}/index.vue`
+    const fullPath = `../../pages${componentPath}.vue`
+    const fullPathWithIndex = `../../pages${componentPath}/index.vue`
 
     // 先尝试直接路径，再尝试添加/index的路径
     const module = this.modules[fullPath] || this.modules[fullPathWithIndex]
 
     if (!module) {
       console.error(
-        `[ComponentLoader] 未找到组件: ${componentPath}，尝试过的路径: ${fullPath} 和 ${fullPathWithIndex}`
+        `[ComponentLoader] 未找到组件: ${componentPath}，尝试过的路径: ${fullPath} 和 ${fullPathWithIndex}`,
       )
       return this.createErrorComponent(componentPath)
     }
@@ -46,14 +46,14 @@ export class ComponentLoader {
    * 加载布局组件
    */
   loadLayout(): () => Promise<any> {
-    return () => import('@/views/index/index.vue')
+    return () => import('@/pages/index/index.vue')
   }
 
   /**
    * 加载 iframe 组件
    */
   loadIframe(): () => Promise<any> {
-    return () => import('@/views/outside/Iframe.vue')
+    return () => import('@/pages/outside/Iframe.vue')
   }
 
   /**
@@ -64,7 +64,7 @@ export class ComponentLoader {
       Promise.resolve({
         render() {
           return h('div', {})
-        }
+        },
       })
   }
 
@@ -76,7 +76,7 @@ export class ComponentLoader {
       Promise.resolve({
         render() {
           return h('div', { class: 'route-error' }, `组件未找到: ${componentPath}`)
-        }
+        },
       })
   }
 }

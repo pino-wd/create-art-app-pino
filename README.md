@@ -201,7 +201,7 @@ create-art-app-pino/
 │   ├── featureDeps.ts           # 功能模块依赖声明
 │   └── utils/
 │       ├── renderTemplate.ts    # 模板渲染引擎
-│       ├── deepMerge.ts         # package.json 深度合并
+│       ├── deepMerge.ts         # package.json 依赖排序合并
 │       └── banner.ts            # CLI 横幅
 ├── template/                    # 模板层
 │   ├── base/                    # 基础模板（所有项目共享）

@@ -26,7 +26,7 @@ export class IframeRouteManager {
    * 添加 iframe 路由
    */
   add(route: AppRouteRecord): void {
-    if (!this.iframeRoutes.find((r) => r.path === route.path)) {
+    if (!this.iframeRoutes.find(r => r.path === route.path)) {
       this.iframeRoutes.push(route)
     }
   }
@@ -42,7 +42,7 @@ export class IframeRouteManager {
    * 根据路径查找 iframe 路由
    */
   findByPath(path: string): AppRouteRecord | undefined {
-    return this.iframeRoutes.find((route) => route.path === path)
+    return this.iframeRoutes.find(route => route.path === path)
   }
 
   /**
@@ -70,7 +70,8 @@ export class IframeRouteManager {
       if (data) {
         this.iframeRoutes = JSON.parse(data)
       }
-    } catch (error) {
+    }
+    catch (error) {
       console.error('[IframeRouteManager] 加载 iframe 路由失败:', error)
       this.iframeRoutes = []
     }

@@ -1,11 +1,11 @@
 import type { Router } from 'vue-router'
 import NProgress from 'nprogress'
+import { MenuProcessor, RouteRegistry } from '@/router/core'
 import { useAuthStore } from '@/store/modules/auth'
 import { useMenuStore } from '@/store/modules/menu'
 import { isDevTokenAuthMode, isZhihuishuDomain } from '@/utils/auth'
 import { setWorktab } from '@/utils/navigation'
 import { setPageTitle } from '@/utils/router'
-import { MenuProcessor, RouteRegistry } from '@/router/core'
 
 /**
  * 设置路由前置守卫（智慧树 CAS + dev-token 双模式）
@@ -27,7 +27,8 @@ export function setupBeforeEachGuard(router: Router): void {
       if (!success) {
         return { path: '/403', replace: true }
       }
-    } else {
+    }
+    else {
       // CAS 模式：需要在智慧树域名下运行
       if (!isZhihuishuDomain()) {
         authStore.logout(to.fullPath)
@@ -54,7 +55,8 @@ export function setupBeforeEachGuard(router: Router): void {
 
         // 注册动态路由后，进行重定向以确保新路由生效
         return { ...to, replace: true }
-      } catch (error) {
+      }
+      catch (error) {
         console.error('[Router] 初始化菜单或路由失败:', error)
       }
     }
