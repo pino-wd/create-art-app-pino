@@ -1,5 +1,5 @@
 import type { AxiosRequestConfig } from 'axios'
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 import { ElMessage } from 'element-plus'
 import { useAuthStore } from '@/store/modules/auth'
 import { getCurrentRedirectPath } from '@/utils/auth'
@@ -32,6 +32,17 @@ http.interceptors.request.use(
 // 响应拦截器：处理 401 和业务错误
 http.interceptors.response.use(
   (response) => {
+    // 后端可能使用 HTTP 200 承载登录失效业务码，不能交给业务层作为成功数据消费。
+    if (isAuthFailure(response.status, response.data?.code)) {
+      useAuthStore().expireSession(getCurrentRedirectPath())
+      return Promise.reject(new AxiosError(
+        response.data?.message || '登录已失效，请重新登录',
+        'ERR_AUTH_EXPIRED',
+        response.config,
+        response.request,
+        response,
+      ))
+    }
     return response.data
   },
   (error) => {

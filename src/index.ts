@@ -7,13 +7,19 @@ import { generate } from './generator'
 import { postGenerate } from './postActions'
 
 async function main(): Promise<void> {
-  const argv = minimist(process.argv.slice(2), {
-    // 注意：git/hooks 不能放进 boolean 列表——minimist 会让未传入的 boolean 默认为 false，
-    // 导致 resolveScaffoldOption 把"未指定"误判为"显式关闭"，破坏脚手架默认开启行为。
-    // 参照 reference/vscode/agents：未声明时 --no-x 解析为 false、未传为 undefined、--x 为 true。
-    boolean: ['default', 'history', 'hash'],
+  const args = process.argv.slice(2)
+  const scaffoldFlags = ['reference', 'vscode', 'agents', 'git', 'hooks', 'doc-governance']
+  const argv = minimist(args, {
+    boolean: ['default', 'history', 'hash', ...scaffoldFlags],
     string: ['auth', 'package-manager'],
   })
+
+  // 布尔开关不能吞掉后续项目名；未显式传入的开关交回交互选项决定。
+  const optionArgs = args.slice(0, args.indexOf('--') === -1 ? args.length : args.indexOf('--'))
+  for (const flag of scaffoldFlags) {
+    const specified = optionArgs.some(arg => arg === `--${flag}` || arg === `--no-${flag}` || arg.startsWith(`--${flag}=`))
+    if (!specified) delete argv[flag]
+  }
 
   showBanner()
 

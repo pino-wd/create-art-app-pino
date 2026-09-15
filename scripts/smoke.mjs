@@ -50,6 +50,19 @@ const combos = [
   },
 ]
 
+// 显式布尔开关位于项目名前时，项目名仍须作为位置参数解析。
+combos.push({
+  name: 'smoke-flags',
+  auth: 'art',
+  args: ['--hooks', 'smoke-flags', '--git', '--no-git', '--default', '--no-reference'],
+})
+
+combos.push({
+  name: 'smoke-git-flag',
+  auth: 'art',
+  args: ['--git', 'smoke-git-flag', '--no-git', '--default', '--no-reference'],
+})
+
 const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'create-art-app-smoke-'))
 const failures = []
 
@@ -86,6 +99,7 @@ function runCombo(combo, tmpRoot) {
   const run = spawnSync(process.execPath, [distCli, ...combo.args], {
     cwd: tmpRoot,
     encoding: 'utf8',
+    timeout: 30000,
   })
 
   if (run.status !== 0) {
@@ -204,4 +218,3 @@ function tail(text, max = 2000) {
   const trimmed = (text || '').trim()
   return trimmed.length > max ? `...${trimmed.slice(-max)}` : trimmed
 }
-

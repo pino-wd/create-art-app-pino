@@ -152,6 +152,7 @@ export const useAuthStore = defineStore('auth', () => {
    * 超上限时停止跳转并置为 failed，交由路由守卫落到错误页，避免后端故障时整页死循环。
    */
   function handleExchangeFailure(): void {
+    clear()
     if (bumpExchangeFailureCount() > MAX_EXCHANGE_FAILURE) {
       resetExchangeFailureCount()
       updateAuthBootstrapState({
@@ -224,7 +225,6 @@ export const useAuthStore = defineStore('auth', () => {
    * 通过 jt-cas Token 调用登录初始化接口，换取业务 token 与用户快照。
    */
   async function loginByCasUser(jtCasToken: string): Promise<boolean> {
-    token.value = jtCasToken
     const loginData = await loginWithCasUser({}, jtCasToken)
 
     token.value = loginData.token || jtCasToken
@@ -393,11 +393,16 @@ export const useAuthStore = defineStore('auth', () => {
       }
       finally {
         isLoggingIn.value = false
-        autoLoginPromise = null
       }
     })()
 
-    return autoLoginPromise
+    // 等待已赋值的 Promise 后再释放，覆盖开发态不经过 await 就返回的分支。
+    try {
+      return await autoLoginPromise
+    }
+    finally {
+      autoLoginPromise = null
+    }
   }
 
   /**

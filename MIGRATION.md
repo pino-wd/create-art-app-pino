@@ -39,6 +39,24 @@
 3. 引入测试设施：新增 `vitest.config.ts`、`test:unit` 脚本与 `vitest` / `jsdom` / `@vue/test-utils` 依赖
 4. 引入 eslint 650 行熔断规则，超长文件参考新版模板拆分方式（如 `hooks/core/useTable.ts` 拆出 `useTableConfig.ts`）
 
+### 2026-09-15 审查修复（未发布）
+
+本节对应当前源码修复，尚未发布新版本；已有项目不会自动获得模板变更。
+
+- 智慧树请求层同时检查 HTTP 401 和 HTTP 200 响应中的业务码 `401` / `4010001`，触发登录失效处理并拒绝请求。业务失效错误保留 Axios 响应信息，错误码为 `ERR_AUTH_EXPIRED`。
+- CAS 换票成功前不把 CAS token 写入业务 token；换票失败时清理业务 token、用户快照及认证缓存，包括重试耗尽进入 403 的分支。CAS Cookie 保留原有重试策略。
+- 自动登录 Promise 在赋值并等待完成后释放，修复开发态同步返回造成的旧成功结果复用；并发登录仍共享进行中的换票。
+- CLI 工程开关按布尔值解析，`--git demo --default`、`--hooks demo --default` 不再吞掉项目名；未指定的开关继续服从交互选择及默认值，`--no-*` 仍可显式关闭。
+
+已有智慧树项目应合并新版 `template/auth-zhihuishu/src/utils/http/index.ts` 与 `template/auth-zhihuishu/src/store/modules/auth/index.ts` 的上述修改，保留项目自身接口和业务定制。CLI 参数修复仅影响后续生成，无需调整已有项目目录。
+
+验证记录：
+
+- `pnpm exec tsc --noEmit`：CLI 类型检查通过。
+- `pnpm test:auth`：使用真实认证模板源码及隔离依赖，验证开发态失效、并发换票、换票成功/失败、HTTP 与业务失效码；不调用真实接口。
+- `pnpm test:smoke`：构建 CLI 并验证五组生成组合，覆盖两类认证、关闭工程开关，以及 `--hooks` / `--git` 位于项目名前的场景。
+- 未安装生成项目依赖，未运行其完整 lint/type-check 或浏览器 CAS 联调；隔离回归不能替代真实后端协议验收。
+
 ---
 
 <!-- 新版本迁移段落模板：
