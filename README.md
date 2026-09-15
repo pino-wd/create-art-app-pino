@@ -146,9 +146,10 @@ npm config get registry
 
 ```bash
 npm login --registry=https://registry.npmjs.org
+pnpm publish --registry=https://registry.npmjs.org
 ```
 
-**方式 B：在 package.json 中锁定发布地址（一劳永逸）**
+**方式 B：在 package.json 中锁定发布地址**
 
 项目已配置 `publishConfig`，`pnpm publish` 会自动走官方 registry：
 
@@ -160,7 +161,7 @@ npm login --registry=https://registry.npmjs.org
 }
 ```
 
-> 日常 `pnpm install` 仍走 CNPM 镜像，两不耽误。
+> 日常 `pnpm install` 仍走 CNPM 镜像，两不耽误。发布时仍建议显式带 `--registry=https://registry.npmjs.org`，避免全局镜像配置被误用。
 
 ### 首次发布
 
@@ -175,17 +176,24 @@ npm whoami --registry=https://registry.npmjs.org
 ### 日常发版
 
 ```bash
-# 1. 更新版本号（自动同步到生成项目的版本标记）
+# 1. 更新 MIGRATION.md（如有变更需要已有项目跟进）并先提交
+git add MIGRATION.md && git commit -m "docs: 更新迁移指南"
+
+# 2. 更新版本号（提交 package.json 并自动打 tag，tag 需落在 HEAD 上）
 npm version patch  # 或 minor / major
 
-# 2. 更新 MIGRATION.md（如有变更需要已有项目跟进）
+# 3. 发布到 npm
+#    prepublishOnly 会自动：构建 → 预检（工作区干净 + HEAD 有对应版本 tag + pack 清单无开发产物）
+#    2FA 账号会提示 "Press ENTER to open in the browser..."，回车完成网页授权即可
+pnpm publish --registry=https://registry.npmjs.org
 
-# 3. 发布到 npm（prepublishOnly 自动构建）
-pnpm publish
-
-# 4. 推送 tag
+# 4. 推送提交与 tag
 git push --follow-tags
 ```
+
+> 预检不通过时会在报错里给出原因与逃生方式（`SKIP_PREPUBLISH_CHECK=1` 可临时放行，仅限紧急发布）。
+> 第 1、2 步的顺序不要颠倒：若先 `npm version` 打 tag 再改 `MIGRATION.md`，tag 将不指向 HEAD，预检会拦下发布。
+> 版本号发布后不可复用，若 1.1.0 这类版本发现问题，只能发布新版本或对旧版本执行 `npm deprecate`。
 
 发布后用户即可通过 `pnpm create art-app-pino` 使用最新版本。
 
